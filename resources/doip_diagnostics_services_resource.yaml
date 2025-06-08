@@ -1,0 +1,36 @@
+uds_services:
+  - service-id: 0x10
+    name: DiagnosticSessionControl
+    sub-functions:
+      0x01: DefaultSession
+      0x02: ProgrammingSession
+      0x03: ExtendedSession
+      0x04: SafetySystemDiagnosticSession
+    security-access-required:
+      0x01: NO
+      0x02: YES
+      0x03: NO
+      0x04: YES
+
+  - service-id: 0x11
+    name: ECUReset
+    sub-functions:
+      0x01: HardReset
+      0x02: KeyOffOnReset
+      0x03: SoftReset
+    security-access-required:
+      0x01: NO
+      0x02: NO
+      0x03: NO
+
+  - service-id: 0x27
+    name: SecurityAccess
+    sub-functions:
+      0x01: RequestSeed_Level1
+      0x02: SendKey_Level1
+      0x03: RequestSeed_Level2
+      0x04: SendKey_Level2
+    security-access-required:
+      0x01: N/A
+      0x02: N/A
+      0x03: N/A

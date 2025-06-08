@@ -1,0 +1,16 @@
+from enum import Enum
+
+class DiagnosticLayerEnum(Enum):
+    DEFAULT_SESSION = 1
+    S3_CLIENT_TIME_INIT = 2000
+    S3_SERVER_TIME_INIT = 5000
+    P2_SERVER_INIT = 50
+    P2_EXTENDED_SERVER_INIT = 5000
+    REPEAT_REQUEST_AFTER_INIT = 200
+
+
+
+
+
+
+
