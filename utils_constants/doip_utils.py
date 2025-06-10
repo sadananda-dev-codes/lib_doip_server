@@ -13,7 +13,6 @@ class DoipException(Exception):
 
 class InstantiationNotAllowedError(DoipException):
     """
-
     """
 
     def __init__(self,

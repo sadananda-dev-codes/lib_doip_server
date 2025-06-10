@@ -1,6 +1,5 @@
 class DiagnosticServicesUtil:
 
-
     __sessions = {}
     __routines = {}
     __data_identifiers = {}
@@ -19,6 +18,6 @@ class DiagnosticServicesUtil:
 
     def get_diagnostic_sessions(self):
         pass
-    
+
     def get_diagnostic_session_subfunctions(self):
         pass

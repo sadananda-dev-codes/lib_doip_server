@@ -7,6 +7,7 @@ class DiagnosticLayerEnum(Enum):
     P2_SERVER_INIT = 50
     P2_EXTENDED_SERVER_INIT = 5000
     REPEAT_REQUEST_AFTER_INIT = 200
+    POSITIVE_RESPONSE_CODE = 0x40
 
 
 

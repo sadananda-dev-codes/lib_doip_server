@@ -1,0 +1,8 @@
+
+
+class CheckMemoryRoutine:
+
+class OnDemandSelfTestRoutine:
+class ProgrammingPreconditionsRoutine:
+class CheckUploadPreconditionRoutine:
+class CompleteAndCompatibilityCheckRoutine:

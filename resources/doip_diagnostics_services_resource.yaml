@@ -1,4 +1,4 @@
-uds_services:
+uds_sessions:
   - service-id: 0x10
     name: DiagnosticSessionControl
     sub-functions:
@@ -12,6 +12,7 @@ uds_services:
       0x03: NO
       0x04: YES
 
+ecu_resets:
   - service-id: 0x11
     name: ECUReset
     sub-functions:
@@ -23,6 +24,7 @@ uds_services:
       0x02: NO
       0x03: NO
 
+uds_security:
   - service-id: 0x27
     name: SecurityAccess
     sub-functions:
