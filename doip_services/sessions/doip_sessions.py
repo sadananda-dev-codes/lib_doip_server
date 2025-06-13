@@ -1,43 +1,51 @@
 import struct
-from dataclasses import dataclass
-from doip_diagnostic_session.doip_diagnostic_layer import DiagnosticLayerEnum
-
-@dataclass
-class DiagSessionResponse:
-    sub_function: int
-    nrc: int
-    service_id: int = 0x50
-    keep_alive: int = 0x32
-    timeout: int = 0x1388
-    negative_response = 0x7F
-
-    def to_bytes(self) -> bytes:
-        if not self.nrc:
-            return struct.pack(
-                            '!BBHH',
-                               self.service_id + DiagnosticLayerEnum.POSITIVE_RESPONSE_CODE ,
-                               self.sub_function,
-                               self.keep_alive,
-                               self.timeout
-                            )
-        else:
-            return struct.pack(
-                        '!BBB',
-                               self.negative_response,
-                               self.service_id,
-                               self.nrc
-                                )
+from doip_diagnostic_session.doip_diagnostic_layer import DiagnosticLayerEnum, DiagnosticServices, DiagnosticSessionStatus
 
 class DiagnosticSession:
 
-    def __init__(self,
-                 *,
-                 sub_function: int = 0,
-                 nrc: int = 0):
-        self.response = DiagSessionResponse(
-            sub_function=sub_function,
-            nrc = nrc
-        )
+    def __init__(self):
+        self.service_id = DiagnosticServices.SESSION.value
+        self.sub_function = self.sub_function = getattr(self, '_session_id',None)
 
-    def response(self) -> bytes:
-        return self.response.to_bytes()
+    def request(self) -> bytes:
+        return struct.pack(
+                            '!BBHH',
+                               self.service_id,
+                               self.sub_function,
+                               DiagnosticLayerEnum.P2_SERVER_INIT.value,
+                               DiagnosticLayerEnum.P2_EXTENDED_SERVER_INIT.value
+                            )
+
+    def response(self)->bytes:
+        return struct.pack(
+                        '!BBHH',
+                            self.service_id + DiagnosticServices.POSITIVE_RESPONSE_CODE.value,
+                                self.sub_function,
+                                DiagnosticLayerEnum.P2_SERVER_INIT.value,
+                                DiagnosticLayerEnum.P2_EXTENDED_SERVER_INIT.value
+                                )
+
+    def is_active_session(self):
+        return self.sub_function == DiagnosticSessionStatus.ACTIVE_SESSION
+
+class DefaultSession(DiagnosticSession):
+    _session_id = 0x1
+
+class ProgrammingSession(DiagnosticSession):
+    _session_id = 0x2
+
+class ExtendedSession(DiagnosticSession):
+    _session_id = 0x3
+
+
+d = DefaultSession()
+print(d.request().hex())
+print(d.response().hex())
+
+p = ProgrammingSession()
+print(p.request().hex())
+print(p.response().hex())
+
+e = ExtendedSession()
+print(p.request().hex())
+print(p.response().hex())

@@ -6,7 +6,8 @@ class RoutineControlMeta(type):
     __routine_control_attrs__ = ('routine_id',
                                  'routine_run_time',
                                  'routine_type',
-                                 'routine_status'
+                                 'routine_status',
+                                 'has_routine_results'
                                  )
 
     def __new__(cls, name, bases, dct):
@@ -63,7 +64,7 @@ class RoutineControlService(metaclass=RoutineControlMeta):
         if not nrc:
             return struct.pack('3B', self.service_id, nrc)
 
-        if  self.has_routine_results() and self.sub_function == RoutineSubfunction.ROUTINE_RESULTS.value:
+        if  self.has_routine_results and self.sub_function == RoutineSubfunction.ROUTINE_RESULTS.value:
                 return struct.pack(CheckMemoryRoutineFmt[self.sub_function],
                                self.service_id + 0x40,
                                    self.sub_function,
@@ -80,9 +81,7 @@ class RoutineControlService(metaclass=RoutineControlMeta):
 
 class CheckMemoryRoutine(RoutineControlService):
 
-    def has_routine_results(self):
-        return True
-
+    @staticmethod
     def get_routine_results(self):
         return (32, 85)
 

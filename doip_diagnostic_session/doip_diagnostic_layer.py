@@ -1,13 +1,35 @@
-from enum import Enum
+from enum import Enum, IntEnum
 
-class DiagnosticLayerEnum(Enum):
+class DiagnosticLayerEnum(IntEnum):
     DEFAULT_SESSION = 1
     S3_CLIENT_TIME_INIT = 2000
     S3_SERVER_TIME_INIT = 5000
     P2_SERVER_INIT = 50
     P2_EXTENDED_SERVER_INIT = 5000
     REPEAT_REQUEST_AFTER_INIT = 200
+
+class DiagnosticsNRC(IntEnum):
+    NEGATIVE_RESPONSE_CODE = 0x7F
+    BUSY_REQUEST = 0x78
+    REQUEST_OUT_OF_RANGE = 0x31
+    IN_CORRECT_MESSAGE_LENGTH = 0x11
+    SECURITY_ACCESS_DENIED = 0x33
+    INVALID_KEY = 0x35
+
+class DiagnosticSessionStatus:
+    ACTIVE_SESSION = 1
+    SESSION_TIME_OUT = False
+
+class DiagnosticServices(IntEnum):
     POSITIVE_RESPONSE_CODE = 0x40
+    SESSION = 0x10
+    ECU_RESET = 0x11
+    ROUTINE_CONTROL = 0x31
+    DTC = 0x19
+    READ_DATA_BY_IDENTIFIER = 0x22
+    WRITE_DATA_BY_IDENTIFIER = 0x2E
+    SECURITY_ACCESS = 0x27
+
 
 
 
