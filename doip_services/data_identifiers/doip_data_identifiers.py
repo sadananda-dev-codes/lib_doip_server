@@ -1,5 +1,5 @@
 import struct
-from utils_constants.doip_constants import  read_data_by_identifier
+from  doip_services.data_identifiers.doip_data_identifiers_util import  read_data_by_identifier
 from  doip_diagnostic_session.doip_diagnostic_layer import DiagnosticServices
 
 class DataIdentifiers:
@@ -64,46 +64,4 @@ class SystemNameOrEngineType(ReadDataByIdentifier):
 
 class VehicleIdentificationNumber(ReadDataByIdentifier):
     pass
-
-ads = ActiveDiagnosticSession()
-print(ads.request().hex())
-print(ads.response().hex())
-print(ads.get_did_response())
-
-print('---------------------------')
-
-ads = VehicleManufacturerSparePartNumber()
-print(ads.request().hex())
-print(ads.response().hex())
-print(ads.get_did_response())
-
-print('---------------------------')
-
-ads = VehicleManufacturerEcuSoftwareVersionNumber()
-print(ads.request().hex())
-print(ads.response().hex())
-print(ads.get_did_response())
-
-print('---------------------------')
-
-ads = VehicleManufacturerECUHardWareNumber()
-print(ads.request().hex())
-print(ads.response().hex())
-print(ads.get_did_response())
-
-print('---------------------------')
-
-ads = SystemNameOrEngineType()
-print(ads.request().hex())
-print(ads.response().hex())
-print(ads.get_did_response())
-
-print('---------------------------')
-
-ads = VehicleIdentificationNumber()
-print(ads.request().hex())
-print(ads.response().hex())
-print(ads.get_did_response())
-
-print('---------------------------')
 
