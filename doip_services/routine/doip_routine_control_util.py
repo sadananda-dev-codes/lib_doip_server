@@ -64,3 +64,10 @@ class OnDemandSelfTestRoutineEnum(Enum):
     ROUTINE_TYPE = RoutineTypes.SHORT_ROUTINE.value
     ROUTINE_STATUS = RoutineStatus.ROUTINE_NOT_STARTED.value
     ROUTINE_RESULTS_RESPONSE_DID = (None,)
+
+class RoutineControlFactoryClassEnum(Enum):
+    CheckMemoryRoutine = 'CheckMemoryRoutine'
+    OnDemandSelfTestRoutine = 'OnDemandSelfTestRoutine'
+    ProgrammingPreconditionsRoutine = 'ProgrammingPreconditionsRoutine'
+    CheckUploadPreconditionRoutine = 'CheckUploadPreconditionRoutine'
+    CompleteAndCompatibilityCheckRoutine = 'CompleteAndCompatibilityCheckRoutine'
