@@ -28,11 +28,10 @@ class RoutineControlMeta(type):
                     return getattr(self, attr)
 
                 def setter(self,
-                           routine_name = attr,
                            value = 0):
                     if value < 0:  # Example validation
                         raise ValueError(f"{name} cannot be negative")
-                    setattr(self, routine_name, value)
+                    setattr(self, attr, value)
 
                 return property(getter, setter)
 
@@ -56,7 +55,7 @@ class RoutineControlService(metaclass=RoutineControlMeta):
 
     def start(self)-> bytes:
         self.sub_function = RoutineSubfunction.START_ROUTINE.value
-        self._routine_control_handler()
+        self.start_routine()
         return self._request()
 
     def stop(self):
@@ -69,9 +68,13 @@ class RoutineControlService(metaclass=RoutineControlMeta):
         self.sub_function = RoutineSubfunction.RESULT_ROUTINE.value
         return self._request()
 
-    def _routine_control_handler(self):
+    def  start_routine(self):
+        asyncio.run(self._routine_control_handler())
+
+    async def _routine_control_handler(self):
         loop = asyncio.get_running_loop()
-        self.task = loop.create_task(_check_memory_routine(self._sub_routine()))
+        self.task = loop.create_task(_check_memory_routine(self))
+        await asyncio.sleep(1)
 
     def response(self):
 
@@ -120,7 +123,6 @@ print(sadananda.response().hex())
 
 print('-----------------------------------------')
 
-'''
 sadananda = CompleteAndCompatibilityCheckRoutine()
 print(sadananda.start().hex())
 print(sadananda.response().hex())
@@ -166,5 +168,3 @@ print(sadananda.response().hex())
 print(sadananda.result().hex())
 print(sadananda.response().hex())
 print('')
-
-'''
