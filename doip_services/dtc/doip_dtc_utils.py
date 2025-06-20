@@ -8,6 +8,9 @@ class DtcDict(UserDict):
     def get_all_dtc_codes(self):
         return list(self.keys())
 
+    def get_all_dtc_codes_by_status(self, status):
+        return [(key, dtc.dtc_status) for key, dtc in zip(self.keys(), self.values()) if dtc.dtc_status | status ]
+
     def get_status_of_all_dtc(self):
         return [dtc.dtc_status for  dtc in self.values()]
 

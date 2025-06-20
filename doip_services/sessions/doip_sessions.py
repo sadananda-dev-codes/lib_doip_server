@@ -5,7 +5,7 @@ class DiagnosticSession:
 
     def __init__(self):
         self.service_id = DiagnosticServices.SESSION.value
-        self.sub_function = self.sub_function = getattr(self, '_session_id',None)
+        self.sub_function = getattr(self, '_session_id',None)
 
     def request(self) -> bytes:
         return struct.pack(
