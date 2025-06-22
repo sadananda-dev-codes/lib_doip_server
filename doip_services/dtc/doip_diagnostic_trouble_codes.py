@@ -1,9 +1,12 @@
+import random
 from abc import ABC, abstractmethod
-from doip_services.dtc.doip_dtc_utils import DTC
+from doip_services.dtc.doip_dtcs import *
+import struct
 
 class Dtc(ABC):
     service_id = 0x19
     dtc_status = 0x2F
+    dtc_available_status = 0xFF
 
     @classmethod
     @abstractmethod
@@ -20,15 +23,17 @@ class ReadDtcInformation(Dtc):
 
     @classmethod
     def request(cls):
-        _dct = DTC.get_all_dtc_codes_by_status(cls.dtc_status)
-        return
+        return struct.pack('3B', cls.service_id, cls.sub_function, cls.dtc_status)
 
     @classmethod
     def response(cls):
-        return
+        _dcts_with_status = DTC.get_all_dtc_codes_by_status(cls.dtc_status)
+        struct_format = len(_dcts_with_status) * 4 + 5
+        return _dcts_with_status
 
 class ReadDtcSnapShot(Dtc):
     sub_function = 0x04
+    snap_shot_dtc = 0x00
 
     @classmethod
     def request(cls):
@@ -40,10 +45,18 @@ class ReadDtcSnapShot(Dtc):
 
 class ReadDtcExtendedSnapshot(Dtc):
     sub_function = 0x06
+    extended_id = 0x01
+    extended_dtc = 0x00
 
     @classmethod
     def request(cls):
-        pass
+        return struct.pack('6B', cls.service_id,
+                           cls.sub_function,
+                           cls.extended_dtc.to_bytes(3, 'big'),
+                           DTC[cls.extended_dtc].dtc_status,
+                           cls.extended_id,
+                           random.random(0xFF)
+                           )
 
     @classmethod
     def response(cls):
@@ -71,3 +84,9 @@ class ReadAvailableDtc(Dtc):
     def response(cls):
         pass
 
+read = ReadDtcInformation()
+print(read.request().hex())
+#print(read.response())
+
+read = ReadDtcExtendedSnapshot()
+print(read.request().hex())

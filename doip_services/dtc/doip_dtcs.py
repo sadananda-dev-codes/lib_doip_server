@@ -25,6 +25,7 @@ class ChecksumDTC:
 class InvalidDTC:
     pass
 
+'''
 print(f'{AliveCounterDTC.dtc_status =} \n {ChecksumDTC.dtc_status=} \n {InvalidDTC.dtc_status=}\n')
 
 print('--------------------------')
@@ -37,3 +38,6 @@ print('--------------------------')
 print(DTC.get_dtcs_by_status(0x2F))
 print('--------------------------')
 print(DTC.get_all_dtc_codes_by_status(0x2F))
+
+print(DTC)
+'''

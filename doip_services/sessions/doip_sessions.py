@@ -3,30 +3,31 @@ from doip_diagnostic_session.doip_diagnostic_layer import DiagnosticLayerEnum, D
 
 class DiagnosticSession:
 
-    def __init__(self):
-        self.service_id = DiagnosticServices.SESSION.value
-        self.sub_function = getattr(self, '_session_id',None)
+    service_id = DiagnosticServices.SESSION.value
+    sub_function = 0x01
 
-    def request(self) -> bytes:
+    @classmethod
+    def request(cls) -> bytes:
         return struct.pack(
-                            '!BBHH',
-                               self.service_id,
-                               self.sub_function,
+                         '!BBHH',
+                           cls.service_id,
+                               cls.sub_function,
                                DiagnosticLayerEnum.P2_SERVER_INIT.value,
                                DiagnosticLayerEnum.P2_EXTENDED_SERVER_INIT.value
                             )
 
-    def response(self)->bytes:
+    @classmethod
+    def response(cls)->bytes:
         return struct.pack(
                         '!BBHH',
-                            self.service_id + DiagnosticServices.POSITIVE_RESPONSE_CODE.value,
-                                self.sub_function,
+                            cls.service_id + DiagnosticServices.POSITIVE_RESPONSE_CODE.value,
+                                cls.sub_function,
                                 DiagnosticLayerEnum.P2_SERVER_INIT.value,
                                 DiagnosticLayerEnum.P2_EXTENDED_SERVER_INIT.value
                                 )
-
-    def is_active_session(self):
-        return self.sub_function == DiagnosticSessionStatus.ACTIVE_SESSION
+    @classmethod
+    def is_active_session(cls):
+        return cls.sub_function == DiagnosticSessionStatus.ACTIVE_SESSION
 
 class DefaultSession(DiagnosticSession):
     _session_id = 0x1
@@ -36,7 +37,6 @@ class ProgrammingSession(DiagnosticSession):
 
 class ExtendedSession(DiagnosticSession):
     _session_id = 0x3
-
 
 d = DefaultSession()
 print(d.request().hex())
