@@ -8,8 +8,8 @@ from  doip_diagnostic_session.doip_diagnostic_layer import DiagnosticServices
 class DataIdentifiers:
 
     __data_identifier_parameters__ = (
-        'data_identifier_lsb',
         'data_identifier_msb',
+        'data_identifier_lsb',
         'request_format',
         'response_format',
         'data_identifier_response'
@@ -65,22 +65,41 @@ class WriteDataByIdentifier(DataIdentifiers):
                          write_data_by_identifier[self.__class__.__name__])
 
 class ActiveDiagnosticSession(ReadDataByIdentifier):
-    pass
+
+    def __new__(cls):
+        if not hasattr(cls, '_instance'):
+            cls._instance = super(VehicleIdentificationNumber, cls).__new__(cls)
+        return cls._instance
 
 class VehicleManufacturerSparePartNumber(ReadDataByIdentifier):
-    pass
+    def __new__(cls):
+        if not hasattr(cls, '_instance'):
+            cls._instance = super(VehicleIdentificationNumber, cls).__new__(cls)
+        return cls._instance
 
 class VehicleManufacturerEcuSoftwareVersionNumber(ReadDataByIdentifier):
-    pass
+    def __new__(cls):
+        if not hasattr(cls, '_instance'):
+            cls._instance = super(VehicleIdentificationNumber, cls).__new__(cls)
+        return cls._instance
 
 class VehicleManufacturerECUHardWareNumber(ReadDataByIdentifier):
-    pass
+    def __new__(cls):
+        if not hasattr(cls, '_instance'):
+            cls._instance = super(VehicleIdentificationNumber, cls).__new__(cls)
+        return cls._instance
 
 class SystemNameOrEngineType(ReadDataByIdentifier):
-    pass
+    def __new__(cls):
+        if not hasattr(cls, '_instance'):
+            cls._instance = super(VehicleIdentificationNumber, cls).__new__(cls)
+        return cls._instance
 
 class VehicleIdentificationNumber(ReadDataByIdentifier):
-    pass
+    def __new__(cls):
+        if not hasattr(cls, '_instance'):
+            cls._instance = super(VehicleIdentificationNumber, cls).__new__(cls)
+        return cls._instance
 
 class GlobalRealTime(WriteDataByIdentifier):
     pass

@@ -9,13 +9,10 @@ class DtcDict(UserDict):
         return list(self.keys())
 
     def get_all_dtc_codes_by_status(self, status):
-        return [(key, dtc.dtc_status) for key, dtc in zip(self.keys(), self.values()) if dtc.dtc_status | status ]
+        return [(dtc, _status.dtc_status) for dtc, _status in zip(self.keys(), self.values()) if _status.dtc_status | status ]
 
     def get_status_of_all_dtc(self):
         return [dtc.dtc_status for  dtc in self.values()]
-
-    def get_dtc_codes_by_snapshot_id(self, snapshot_id):
-        return
 
     def get_dtcs_by_status(self, status, _list=[]):
         for dtc in self.values():
@@ -28,5 +25,8 @@ class DtcDict(UserDict):
             if dtc.dtc_number==dtc_number:
                 return dtc.dtc_status
         return None
+
+    def get_dtc_and_their_status(self):
+        return [(dtc, _status.dtc_status) for dtc, _status in zip(self.keys(), self.values())]
 
 DTC = DtcDict()

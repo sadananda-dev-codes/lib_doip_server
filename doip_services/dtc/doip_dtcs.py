@@ -13,7 +13,7 @@ def DtcWrapper(dtc):
         return cls
     return dtc_decorator
 
-@DtcWrapper(0x3285)
+@DtcWrapper(0x328511)
 class AliveCounterDTC:
     pass
 
@@ -21,8 +21,12 @@ class AliveCounterDTC:
 class ChecksumDTC:
     pass
 
-@DtcWrapper(0x213456)
+@DtcWrapper(0xEF0700)
 class InvalidDTC:
+    pass
+
+@DtcWrapper(0xEF1100)
+class TimeoutDTC:
     pass
 
 '''
