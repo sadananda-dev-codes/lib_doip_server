@@ -3,6 +3,9 @@ from abc import ABC, abstractmethod
 from doip_services.dtc.doip_dtcs import *
 from doip_diagnostic_session.doip_diagnostic_layer import DiagnosticServices
 import struct
+from doip_services.dtc.doip_dtc_utils import  get_snap_shot_dids
+
+
 
 class Dtc(ABC):
     service_id = 0x19
@@ -55,8 +58,9 @@ class ReadDtcSnapShot(Dtc):
         _response.extend(cls.snap_shot_dtc.to_bytes(3, 'big'))
         _response.append(DTC.get_dtc_status(cls.snap_shot_dtc))
         _response.append(cls.number_of_snapshot_did)
-
-        return struct.pack('6B', *_response)
+        _response.extend(get_snap_shot_dids())
+        format = str(len(_response)) + 'B'
+        return struct.pack(format, *_response)
 
 class ReadDtcExtendedSnapshot(Dtc):
     sub_function = 0x06
@@ -120,6 +124,7 @@ print(read.response().hex())
 
 ReadDtcSnapShot.snap_shot_dtc = 0x328511
 print(ReadDtcSnapShot.request().hex())
+print(ReadDtcSnapShot.response().hex())
 
 print('---------------------------------')
 

@@ -13,17 +13,7 @@ class DataIdentifiersFactoryMethods(Enum):
     response = 2
     get_did_response = 3
 
-read_data_by_identifier = \
-    {
-        'ActiveDiagnosticSession': (0xF1, 0x86, '4B', (DiagnosticSessionStatus.ACTIVE_SESSION,)),
-        'VehicleManufacturerSparePartNumber': (0xF1, 0x87, '8B', (0x31, 0x35, 0x36, 0x41, 0x48)),
-        'VehicleManufacturerEcuSoftwareVersionNumber': (0xF1, 0x89, '6B', (0x34, 0x33, 0x37)),
-        'VehicleManufacturerECUHardWareNumber': (0xF1, 0x91, '7B', (0x38, 0x35, 0x45, 0x39)),
-        'SystemNameOrEngineType': (0xF1, 0x97, '14B', (0x48, 0x43, 0x22, 0xE4, 0xC6, 0xF7, 0x72, 0x20, 0x20, 0x20, 0x20)),
-        'VehicleIdentificationNumber': (0xF1,0x90, '9B', (0x32, 0x85, 0x32, 0x85, 0x32, 0x85))
-    }
-
-read_data_by_identifier = \
+read_data_by_identifiers = \
     {
         'ActiveDiagnosticSession': (0xF1, 0x86, '3B','4B', (DiagnosticSessionStatus.ACTIVE_SESSION,)),
         'VehicleManufacturerSparePartNumber': (0xF1, 0x87, '3B', '8B', (0x31, 0x35, 0x36, 0x41, 0x48)),
@@ -33,7 +23,7 @@ read_data_by_identifier = \
         'VehicleIdentificationNumber': (0xF1,0x90,'3B', '9B', (0x32, 0x85, 0x32, 0x85, 0x32, 0x85))
     }
 
-write_data_by_identifier = \
+write_data_by_identifiers = \
     {
         'GlobalRealTime': (0xDD, 0x00,'7B','3B', [0x20, 0x05, 0x16, 0x12]),
         'TotalDistance':(0xDD, 0x00,'6B','3B', [0x56, 0x32, 0x85]),

@@ -1,15 +1,21 @@
 import struct
 from  doip_services.data_identifiers.doip_data_identifiers_util import  (
-    read_data_by_identifier,
-    write_data_by_identifier
+    read_data_by_identifiers,
+    write_data_by_identifiers
     )
 from  doip_diagnostic_session.doip_diagnostic_layer import DiagnosticServices
+
+class SingletonDataIdentifiers(type):
+    def __call__(cls, *args, **kwargs):
+        if not hasattr(cls, '_instance'):
+            cls._instance = super().__call__(*args, **kwargs)
+        return cls._instance
 
 class DataIdentifiers:
 
     __data_identifier_parameters__ = (
-        'data_identifier_msb',
         'data_identifier_lsb',
+        'data_identifier_msb',
         'request_format',
         'response_format',
         'data_identifier_response'
@@ -25,11 +31,14 @@ class DataIdentifiers:
                                                         data_identifier_values):
             setattr(self, data_identifier_attr, data_id_values)
 
-    def request(self):
+    def request(self, write_did = []):
+
         if isinstance(self, ReadDataByIdentifier):
             return struct.pack(self.request_format, self.service_id, self.data_identifier_lsb,
                            self.data_identifier_msb)
         if isinstance(self, WriteDataByIdentifier):
+            if write_did:
+                self.data_identifier_response = write_did
             return struct.pack(self.request_format, self.service_id, self.data_identifier_lsb,
                                self.data_identifier_msb, *self.data_identifier_response)
 
@@ -50,56 +59,36 @@ class DataIdentifiers:
                 self.data_identifier_msb
             )
 
-class ReadDataByIdentifier(DataIdentifiers):
+class ReadDataByIdentifier(DataIdentifiers, metaclass=SingletonDataIdentifiers):
 
     def __init__(self):
+        read_did_key =  self.__class__.__name__
         super().__init__(DiagnosticServices.READ_DATA_BY_IDENTIFIER.value,
-                         read_data_by_identifier[self.__class__.__name__])
+                         read_data_by_identifiers[read_did_key])
 
-    def get_did_response(self):
-        return self.data_identifier_response
-
-class WriteDataByIdentifier(DataIdentifiers):
+class WriteDataByIdentifier(DataIdentifiers, metaclass=SingletonDataIdentifiers):
     def __init__(self):
+        write_did_key = self.__class__.__name__
         super().__init__(DiagnosticServices.WRITE_DATA_BY_IDENTIFIER.value,
-                         write_data_by_identifier[self.__class__.__name__])
+                         write_data_by_identifiers[write_did_key])
 
 class ActiveDiagnosticSession(ReadDataByIdentifier):
-
-    def __new__(cls):
-        if not hasattr(cls, '_instance'):
-            cls._instance = super(VehicleIdentificationNumber, cls).__new__(cls)
-        return cls._instance
+    pass
 
 class VehicleManufacturerSparePartNumber(ReadDataByIdentifier):
-    def __new__(cls):
-        if not hasattr(cls, '_instance'):
-            cls._instance = super(VehicleIdentificationNumber, cls).__new__(cls)
-        return cls._instance
+    pass
 
 class VehicleManufacturerEcuSoftwareVersionNumber(ReadDataByIdentifier):
-    def __new__(cls):
-        if not hasattr(cls, '_instance'):
-            cls._instance = super(VehicleIdentificationNumber, cls).__new__(cls)
-        return cls._instance
+    pass
 
 class VehicleManufacturerECUHardWareNumber(ReadDataByIdentifier):
-    def __new__(cls):
-        if not hasattr(cls, '_instance'):
-            cls._instance = super(VehicleIdentificationNumber, cls).__new__(cls)
-        return cls._instance
+    pass
 
 class SystemNameOrEngineType(ReadDataByIdentifier):
-    def __new__(cls):
-        if not hasattr(cls, '_instance'):
-            cls._instance = super(VehicleIdentificationNumber, cls).__new__(cls)
-        return cls._instance
+    pass
 
 class VehicleIdentificationNumber(ReadDataByIdentifier):
-    def __new__(cls):
-        if not hasattr(cls, '_instance'):
-            cls._instance = super(VehicleIdentificationNumber, cls).__new__(cls)
-        return cls._instance
+    pass
 
 class GlobalRealTime(WriteDataByIdentifier):
     pass
@@ -116,7 +105,7 @@ class UsageMode(WriteDataByIdentifier):
 class ElectricPowerLevel(WriteDataByIdentifier):
     pass
 
-'''
+
 a = ActiveDiagnosticSession()
 print(list(a.request().hex()))
 print(list(a.response().hex()))
@@ -136,7 +125,6 @@ print(list(s.response().hex()))
 _v = VehicleManufacturerECUHardWareNumber()
 print(list(_v.request().hex()))
 print(list(_v.response().hex()))
-'''
 
 g = GlobalRealTime()
 print(g.request().hex())
@@ -163,5 +151,20 @@ print(u.response().hex())
 print('------------------------')
 
 e = ElectricPowerLevel()
-print(e.request().hex())
+print(e.request([32]).hex())
 print(e.response().hex())
+print(e.data_identifier_response)
+print(write_data_by_identifiers)
+
+e1 = ElectricPowerLevel()
+print(e1.request([85]).hex())
+print(e1.response().hex())
+print(e1.data_identifier_response)
+print(write_data_by_identifiers)
+
+
+u1 = UsageMode()
+print(u1.request().hex())
+print(u1.response().hex())
+
+print(hex(id(e)) , hex(id(e1)), hex(id(u)), hex(id(u1)))

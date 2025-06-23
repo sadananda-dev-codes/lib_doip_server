@@ -1,4 +1,25 @@
 from collections import UserDict
+from enum import Enum
+from  doip_services.data_identifiers.doip_data_identifiers import (GlobalRealTime,
+                                                                   TotalDistance,
+                                                                   VehicleBatteryVoltage,
+                                                                   UsageMode,
+                                                                   ElectricPowerLevel)
+
+class DtcSnapShotDid(Enum):
+    GlobalRealTime = GlobalRealTime()
+    TotalDistance = TotalDistance()
+    VehicleBatteryVoltage = VehicleBatteryVoltage()
+    UsageMode = UsageMode()
+    ElectricPowerLevel = ElectricPowerLevel()
+
+def get_snap_shot_dids():
+    snap_shot_dids = []
+    for item in DtcSnapShotDid:
+        snap_shot_dids.append(item.value.data_identifier_lsb)
+        snap_shot_dids.append(item.value.data_identifier_msb)
+        snap_shot_dids.extend(item.value.data_identifier_response)
+    return snap_shot_dids
 
 class DtcDict(UserDict):
 
