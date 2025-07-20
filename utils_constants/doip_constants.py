@@ -17,3 +17,4 @@ class DoipMsgTypes(IntEnum):
     DiagnosticMessage = 0x8001
 
 
+    

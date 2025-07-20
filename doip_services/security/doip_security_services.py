@@ -1,109 +1,166 @@
-import struct
-from doip_diagnostic_session.doip_diagnostic_layer import DiagnosticServices
 import random
-from abc import abstractmethod
-class SecurityService:
-    service_id = 0x27
-    subfunction_seed = 0x00
-    subfunction_key = 0x00
-    seed_range = (1,0xFF)
-    
-    def request(self , _request):
-        if _request == self.subfunction_seed:
-            return self._request_seed()
-        
-        if _request == self.subfunction_key:
-            return self._request_key()
-        
-    def response(self , _response):
-        if _response == self.subfunction_seed:
-            self._generate_seed()
-            return self._response_seed()
-        
-        if _response == self.subfunction_key:
-            return self._unlock_key()
-    
-    def _request_seed(self) -> bytes:
-        return struct.pack('!BB', self.service_id, self.sub_function)
-    
-    def _unlock_key(self) -> bytes:
-        return struct.pack(
-                        '!BB',
-                        self.service_id + DiagnosticServices.POSITIVE_RESPONSE_CODE.value,
-                        self.sub_function
-                        )
-    
-    @abstractmethod
-    def _send_key(self) -> bytes:
-        pass
-    
-    @abstractmethod
-    def _response_seed(self) -> bytes:
-        pass
-    
-    @abstractmethod
-    def _generate_seed(self):
-        pass
-    
-class SecurityServiceLevelOne(SecurityService):
-    
-    def __init__(self):
-        self._seed1 = 0
-        self._seed2 = 0
-        self._seed3 = 0
-        self._key1 = 0
-        self._key2 = 0
-        self._key3 = 0
+import struct
+from functools import wraps
+from abc import ABCMeta,  abstractmethod
 
-    def response_seed(self) -> bytes:
+from doip_services.security.doip_security_service_util import security_util , SecurityKeyEnum
+from doip_services.security.doip_security_service_key import yield_keys
+from doip_diagnostic_session.doip_diagnostic_layer import *
+
+def generate_seed():
+        return random.randint(1, 0xFF)
+class SecurityAccessSingleton(ABCMeta):
+    
+    def __call__(cls, *args, **kwds):
+        if not hasattr(cls, '_instance'):
+            cls._instance =  super().__call__(*args, **kwds)
+        return cls._instance
+class SecurityService(metaclass=SecurityAccessSingleton):
+    service_id = 0x27
+    subfunction = 0
+    
+    @abstractmethod
+    def request(self):     
+        pass
+        
+    @abstractmethod
+    def response(self):
+        pass        
+
+def decorate_seed(response_seed):  
+    
+    @wraps(response_seed)      
+    def wrapper_seed(self):
+    
+        if security_util.NRC == DiagnosticsNRC.EXCEEDED_NUMBER_OF_ATTEMPTS.value:
+            return response_seed(self)
+        
+        seeds = []
+
+        for i in range(self._no_of_seeds):
+            seed_value = 0 if not security_util.is_security_key_unlocked and security_util.is_seed_requested else generate_seed()
+            seeds.append(seed_value)
+            if sum(seeds) == 0:
+                security_util.is_seed_requested = 1
+            security_util.NRC = 0
+        setattr(self, '_seeds', seeds)
+        
+        return response_seed(self)
+    return wrapper_seed
+class SecurityServiceLevelOneSeed(SecurityService):
+
+    subfunction = 0x1
+    _no_of_seeds = 3
+    
+    def request(self):     
+
+        if security_util.NRC == DiagnosticsNRC.EXCEEDED_NUMBER_OF_ATTEMPTS.value:
+            security_util.NRC = DiagnosticsNRC.REQUIRED_TIME_DELAY_HAS_NOT_EXPIRED.value
+            return struct.pack('!BBB', 0x7F, self.service_id, security_util.NRC)
+        else:   
+            return struct.pack('!BB',self.service_id, self.subfunction)
+    
+    @decorate_seed
+    def response(self):
         return struct.pack(
                     '!BBBBB', 
                     self.service_id + DiagnosticServices.POSITIVE_RESPONSE_CODE.value,
-                    self.sub_function
-                    self._seed1,
-                    self._seed2,
-                    self._seed3
-                    )
+                    self.subfunction,
+                    *self._seeds
+                    )       
     
-    def generate_seed(self):
-        self._seed1 = random.randint(*self.seed_range)
-        self._seed2 = random.randint(*self.seed_range)
-        self._seed3 = random.randint(*self.seed_range)    
-        
-    def _send_key(self) -> bytes:
-        pass
-    
-    def _response_key(self) -> bytes:
-        pass
-        
-class SecurityServiceLevelEleven(SecurityService):
+def decorate_key(key_request):    
 
-    def __init__(self):
-        self._seed_1 = 0
-        self._seed_2 = 0
-        self._seed_3 = 0
-        self._seed_4 = 0
-        self._key_1 = 0
-        self._key_2 = 0
-        self._key_3 = 0
-        self._key_4 = 0
-        self.subfunction_request_seed = 0x03
-        self.subfunction_request_unlock_key = 0x04
-        
-    def _request_seed(cls) -> bytes:
-        return struct.pack('!BB', cls.service_id, cls.sub_function)
-    
-    def _response_seed(cls):
-        return struct.pack('!BB', cls.service_id + DiagnosticServices.POSITIVE_RESPONSE_CODE.value, cls.sub_function)
+    @wraps(key_request)
+    def wrapper_key(self, _keys):        
 
-    def generate_seed(self):
-        self._seed1 = random.randint(*self.seed_range)
-        self._seed2 = random.randint(*self.seed_range)
-        self._seed3 = random.randint(*self.seed_range)
-        self._seed4 = random.randint(*self.seed_range)
+        if (not security_util.is_seed_requested) and (security_util.is_security_key_unlocked):
+            security_util.NRC = DiagnosticsNRC.REQUEST_SEQUENCE_ERROR.value
+        else:
+            key_values = 0 if security_util.is_security_key_unlocked else yield_keys(SecurityServiceLevelOneSeed()._seeds)
+            setattr(self, f'_keys', key_values)
         
-    def _send_key(self) -> bytes:
-        pass
+        return key_request(self, _keys)
+        
+    return wrapper_key
+
+class SecurityServiceLevelOneKey(SecurityService):
+
+    subfunction = 0x2
     
-    def _response_key(self) -> bytes:
-        pass
+    def response(self):
+        if security_util.NRC:
+            return struct.pack(
+                        '!BBB', 
+                        0x7F,
+                        self.service_id, 
+                        security_util.NRC
+                        )
+        else:
+            if not security_util._is_security_key_unlocked:
+                security_util.unlock_security_service()
+                return struct.pack(
+                            '!BB',
+                            self.service_id + DiagnosticServices.POSITIVE_RESPONSE_CODE.value,
+                            self.subfunction
+                            )
+            else:
+                self.request([])
+    
+    @decorate_key
+    def request(self, _keys:list):   
+        
+        if security_util.NRC == DiagnosticsNRC.REQUEST_SEQUENCE_ERROR.value:
+            return self.response()
+        
+        if security_util.NRC == DiagnosticsNRC.EXCEEDED_NUMBER_OF_ATTEMPTS.value:
+            security_util.NRC = DiagnosticsNRC.REQUIRED_TIME_DELAY_HAS_NOT_EXPIRED.value
+            security_util.start_security_timer()
+            return self.response()
+        
+        if security_util.is_security_key_unlocked:
+            security_util.NRC = DiagnosticsNRC.REQUEST_SEQUENCE_ERROR.value
+            return self.response()
+        
+        if security_util.NRC == DiagnosticsNRC.REQUIRED_TIME_DELAY_HAS_NOT_EXPIRED.value:
+            return self.response()
+        
+        if security_util.security_service_cur_retries >= SecurityKeyEnum.SECURITY_SERVICE_MAX_ATTEMPTS.value:   
+            security_util.NRC = DiagnosticsNRC.EXCEEDED_NUMBER_OF_ATTEMPTS.value 
+            return self.response()        
+        
+        if tuple(self._keys) == tuple(_keys):
+            print(f'{_keys=} {self._keys=}')    
+            security_util.is_seed_requested = 1
+            security_util.NRC = 0
+        else:
+            security_util.security_service_cur_retries =1
+            security_util.NRC = DiagnosticsNRC.INVALID_KEY.value 
+        
+        return self.response()
+                        
+sed = SecurityServiceLevelOneSeed()
+ke = SecurityServiceLevelOneKey()
+
+print('seed request', sed.request().hex())
+print('seed response', sed.response().hex())
+#print('key response', ke.response().hex())
+print('once',ke.request([32, 85, 65]).hex())
+print('twice',ke.request([32, 85, 65]).hex())
+print('thrice',ke.request([32, 85, 65]).hex())
+print('four',ke.request([32, 85, 65]).hex())
+print('five',ke.request([32, 85, 65]).hex())
+print('six',ke.request([32, 85, 65]).hex())
+print('seven',ke.request([32, 85, 65]).hex())
+
+import time 
+for i in range(15):
+    time.sleep(1)
+    print('eight',ke.request([32, 85, 65]).hex())
+
+time.sleep(10)
+print('one last request')
+print(sed.response().hex())
+seeds = sed._seeds
+keys = yield_keys(seeds)
+print(ke.request(keys).hex())

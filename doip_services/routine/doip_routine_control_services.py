@@ -7,14 +7,15 @@ import asyncio
 
 class RoutineControlMeta(type):
 
-    __routine_control_attrs__ = ('routine_id',
-                                 'request_fmt',
-                                 'response_fmt',
-                                 'routine_run_time',
-                                 'routine_type',
-                                 'routine_status',
-                                 'routine_result'
-                                 )
+    __routine_control_attrs__ = (
+                                'routine_id',
+                                'request_fmt',
+                                'response_fmt',
+                                'routine_run_time',
+                                'routine_type',
+                                'routine_status',
+                                'routine_result'
+                                )
 
     def __new__(cls, name, bases, dct):
 
@@ -28,7 +29,7 @@ class RoutineControlMeta(type):
                     return getattr(self, attr)
 
                 def setter(self,
-                           value = 0):
+                        value = 0):
                     if value < 0:  # Example validation
                         raise ValueError(f"{name} cannot be negative")
                     setattr(self, attr, value)
@@ -47,7 +48,7 @@ class RoutineControlService(metaclass=RoutineControlMeta):
     def __init__(self):
 
         for routine_attrs, default in zip(RoutineControlService.__routine_control_attrs__,
-                                             self._routine_attribute_values):
+                                            self._routine_attribute_values):
             setattr(self, f'_{routine_attrs}', default.value)
 
     def _request(self):
