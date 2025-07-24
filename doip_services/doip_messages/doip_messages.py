@@ -4,30 +4,38 @@ from enum import IntEnum
 
 from doip_message_util import DoipHeaderEnum
 
-class DoipMessage():
+class DoipMessage:
     
     __hdr__ = {
-            'protocol_version_version': DoipHeaderEnum.PROTOCOL_VERSION,
-            'inverse_protocol_version': DoipHeaderEnum.INVERSE_PROTOCOL_VERSION,
+            'protocol_version_version': DoipHeaderEnum.PROTOCOL_VERSION.value,
+            'inverse_protocol_version': DoipHeaderEnum.INVERSE_PROTOCOL_VERSION.value,
             'payload_type': 0, 
             'payload_length':0, 
             }
     
+    __hdr__fmt__ = '!BBHI'
+    
     @abstractmethod
-    def _pack():
+    def _pack_payload(self):
         pass
     
     @abstractmethod
-    def _unpack():
+    def _pack(self):
+        pass
+            
+    @abstractmethod
+    def _unpack(self):
         pass
     
-    @abstractmethod
-    def request():
-        pass
+    def request(self):
+        return self._pack()
     
-    @abstractmethod
-    def response():
-        pass        
+    def response(self):
+        return self._pack()        
+
+    def __init__(self):
+        for attrs, value in self.__hdr__.items():
+            setattr(self, attrs, value)
 
 class RoutingActivationRequest:
     
@@ -49,10 +57,7 @@ class RoutingActivationRequest:
         return 
     
     def request(self):
-        return      
-    
-    def __init__(self):
-        pass   
+        return        
     
 class RoutingActivationResponse:
     pass
@@ -60,29 +65,163 @@ class RoutingActivationResponse:
 class DiagnosticMessage:
     pass
 
-class DiagnosticMessageAck:
-    pass
+class DiagnosticMessageAck(DoipMessage):
     
+    def _pack_payload(self):
+        return struct.pack('!HHB', self.source_address, 
+                        self.target_address, 
+                        self.ack_code, )
+        
+    def _pack(self):
+        self.payload_type = doip_message_to_payload_type[DiagnosticMessageAck]
+        payload_bytes =  self._pack_payload()
+        self.payload_length = len(payload_bytes)
+        return struct.pack(
+                        self.__hdr__fmt__, self.protocol_version_version,
+                        self.inverse_protocol_version,
+                        self.payload_type,
+                        self.payload_length
+                        ) + payload_bytes
+    
+    def response(self):
+        return self._pack()
+    
+    def __init__(self, source_address = DoipHeaderEnum.SOURCE_ADDRESS.value,
+                target_address = DoipHeaderEnum.TARGET_ADDRESS.value,
+                ack=0x00):
+        
+        for attrs, value in self.__hdr__.items():
+            setattr(self, attrs, value)
+        
+        self.source_address = source_address
+        self.target_address = target_address
+        self.ack_code = ack
 class DiagnosticMessageNegResponse:
     pass    
     
 class EntityStatusRequest:
-    pass
-
+    def _pack_payload(self):
+        return struct.pack('')
+    
+    def _pack(self):
+        self.payload_type = doip_message_to_payload_type[DiagnosticPowerModeInfoRequest]
+        payload_bytes =  self._pack_payload()
+        self.payload_length = len(payload_bytes)
+        return struct.pack(
+                        self.__hdr__fmt__, self.protocol_version_version,
+                        self.inverse_protocol_version,
+                        self.payload_type,
+                        self.payload_length
+                        ) + payload_bytes
+    
+    def request(self):
+        return self._pack()    
+    
 class EntityStatusResponse:
     pass
     
-class DiagnosticPowerModeInfoRequest:
-    pass
+class DiagnosticPowerModeInfoRequest(DoipMessage):
     
-class DiagnosticPowerModeInfoResponse:
-    pass
+    def _pack_payload(self):
+        return struct.pack('')
     
-class AliveCheckRequest:
-    pass
+    def _pack(self):
+        self.payload_type = doip_message_to_payload_type[DiagnosticPowerModeInfoRequest]
+        payload_bytes =  self._pack_payload()
+        self.payload_length = len(payload_bytes)
+        return struct.pack(
+                        self.__hdr__fmt__, self.protocol_version_version,
+                        self.inverse_protocol_version,
+                        self.payload_type,
+                        self.payload_length
+                        ) + payload_bytes
     
-class AliveCheckResponse:
-    pass
+    def request(self):
+        return self._pack()    
+class DiagnosticPowerModeInfoResponse(DoipMessage):
+    
+    def _pack_payload(self):
+        return struct.pack('!B',self.power_mode)
+    
+    def _pack(self):
+        self.payload_type = doip_message_to_payload_type[DiagnosticPowerModeInfoResponse]
+        payload_bytes =  self._pack_payload()
+        self.payload_length = len(payload_bytes)
+        return struct.pack(
+                        self.__hdr__fmt__, self.protocol_version_version,
+                        self.inverse_protocol_version,
+                        self.payload_type,
+                        self.payload_length                    
+                        ) + payload_bytes
+                        
+    def response(self):
+        return self._pack()    
+    
+    def __init__(self, power_mode):
+        for attrs, value in self.__hdr__.items():
+            setattr(self, attrs, value)
+        self.power_mode = power_mode
+    
+class AliveCheckRequest(DoipMessage):
+    
+    def _pack_payload(self):
+        return struct.pack('')
+    
+    def _pack(self):
+        self.payload_type = doip_message_to_payload_type[AliveCheckRequest]
+        payload_bytes =  self._pack_payload()
+        self.payload_length = len(payload_bytes)
+        return struct.pack(
+                        self.__hdr__fmt__, self.protocol_version_version,
+                        self.inverse_protocol_version,
+                        self.payload_type,
+                        self.payload_length                    
+                        ) + payload_bytes
+                        
+    def request(self):
+        return self._pack() 
+        
+class AliveCheckResponse(DoipMessage):
+    
+    def _pack_payload(self):
+        
+        return struct.pack('!BBBL', self.node_tpe,
+                    self.max_concurrent_sockets,
+                    self.currently_opened_sockets,
+                    self.max_data_size)
+    
+    def _pack(self):
+        
+        self.payload_type = doip_message_to_payload_type[AliveCheckResponse]
+        payload_bytes =  self._pack_payload()
+        
+        print(self.payload_length, payload_bytes)
+        
+        self.payload_length = len(payload_bytes)
+        
+        return struct.pack(
+                        self.__hdr__fmt__, self.protocol_version_version,
+                        self.inverse_protocol_version,
+                        self.payload_type,
+                        self.payload_length                    
+                        ) + payload_bytes
+                        
+    def response(self):
+        return self._pack()
+    
+    def __init__(self, 
+                node_tpe, 
+                max_concurrent_sockets,
+                currently_opened_sockets,
+                max_data_size):
+        
+        for attrs, value in self.__hdr__.items():
+            setattr(self, attrs, value)
+        
+        self.node_tpe = node_tpe
+        self.max_concurrent_sockets = max_concurrent_sockets
+        self.currently_opened_sockets = currently_opened_sockets
+        self.max_data_size = max_data_size
     
 class VehicleIdentificationRequest:
     pass
@@ -116,5 +255,20 @@ doip_payload_type_to_message = {
     payload_type : payload_message for payload_message, payload_type in doip_message_to_payload_type.items()
 }
 
-routing_activation_request = RoutingActivationRequest()
-routing_activation_request._pack()
+#routing_activation_request = RoutingActivationRequest()
+#routing_activation_request._pack()
+
+dpm = DiagnosticPowerModeInfoRequest()
+print(dpm.request().hex())
+
+dpm = DiagnosticPowerModeInfoResponse(0x01)
+print(dpm.request().hex())
+
+alive_check_request = AliveCheckRequest()
+print(alive_check_request.request().hex())
+
+alive_check_response = AliveCheckResponse(0x11, 0x22, 0x33, 0x44)
+print(alive_check_response.response().hex())
+
+diaack = DiagnosticMessageAck()
+print(diaack.response().hex())

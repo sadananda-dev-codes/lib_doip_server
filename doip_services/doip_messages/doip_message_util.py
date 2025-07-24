@@ -1,6 +1,6 @@
 from enum import Enum
 
-class DoipHeaderEnum:
+class DoipHeaderEnum(Enum):
     PROTOCOL_VERSION = 0x02
     INVERSE_PROTOCOL_VERSION = 0xFD
     SOURCE_ADDRESS  = 0xE000
