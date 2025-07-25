@@ -19,14 +19,27 @@ class DoipMessage:
     def _pack_payload(self):
         pass
     
-    @abstractmethod
-    def _pack(self):
-        pass
-            
-    @abstractmethod
-    def _unpack(self):
-        pass
+    def get_payload_length(self):
+        self.payload_length = len(self._pack_payload())
     
+    def get_payload_type(self):
+        self.payload_type = doip_message_to_payload_type[self.__class__]
+        return self.payload_type
+    
+    def _pack(self):
+
+        return struct.pack(
+                        self.__hdr__fmt__, 
+                        self.protocol_version_version,
+                        self.inverse_protocol_version,
+                        self.payload_type,
+                        self.payload_length
+                        ) + self._pack_payload()
+            
+    
+    def _unpack(self):
+        struct.pack('')
+            
     def request(self):
         return self._pack()
     
@@ -66,25 +79,14 @@ class DiagnosticMessage:
     pass
 
 class DiagnosticMessageAck(DoipMessage):
+
+    __payload_fmt__ = '!HHB'
     
     def _pack_payload(self):
-        return struct.pack('!HHB', self.source_address, 
+        return struct.pack(self.__payload_fmt__,
+                        self.source_address, 
                         self.target_address, 
-                        self.ack_code, )
-        
-    def _pack(self):
-        self.payload_type = doip_message_to_payload_type[DiagnosticMessageAck]
-        payload_bytes =  self._pack_payload()
-        self.payload_length = len(payload_bytes)
-        return struct.pack(
-                        self.__hdr__fmt__, self.protocol_version_version,
-                        self.inverse_protocol_version,
-                        self.payload_type,
-                        self.payload_length
-                        ) + payload_bytes
-    
-    def response(self):
-        return self._pack()
+                        self.ack_code)
     
     def __init__(self, source_address = DoipHeaderEnum.SOURCE_ADDRESS.value,
                 target_address = DoipHeaderEnum.TARGET_ADDRESS.value,
@@ -100,88 +102,44 @@ class DiagnosticMessageNegResponse:
     pass    
     
 class EntityStatusRequest:
+    __payload_fmt__ = ''
+    
     def _pack_payload(self):
         return struct.pack('')
-    
-    def _pack(self):
-        self.payload_type = doip_message_to_payload_type[DiagnosticPowerModeInfoRequest]
-        payload_bytes =  self._pack_payload()
-        self.payload_length = len(payload_bytes)
-        return struct.pack(
-                        self.__hdr__fmt__, self.protocol_version_version,
-                        self.inverse_protocol_version,
-                        self.payload_type,
-                        self.payload_length
-                        ) + payload_bytes
-    
-    def request(self):
-        return self._pack()    
     
 class EntityStatusResponse:
     pass
     
 class DiagnosticPowerModeInfoRequest(DoipMessage):
     
+    __payload_fmt__ = ''
+    
     def _pack_payload(self):
         return struct.pack('')
     
-    def _pack(self):
-        self.payload_type = doip_message_to_payload_type[DiagnosticPowerModeInfoRequest]
-        payload_bytes =  self._pack_payload()
-        self.payload_length = len(payload_bytes)
-        return struct.pack(
-                        self.__hdr__fmt__, self.protocol_version_version,
-                        self.inverse_protocol_version,
-                        self.payload_type,
-                        self.payload_length
-                        ) + payload_bytes
-    
-    def request(self):
-        return self._pack()    
 class DiagnosticPowerModeInfoResponse(DoipMessage):
+    
+    __payload_fmt__ = '!B'
     
     def _pack_payload(self):
         return struct.pack('!B',self.power_mode)
-    
-    def _pack(self):
-        self.payload_type = doip_message_to_payload_type[DiagnosticPowerModeInfoResponse]
-        payload_bytes =  self._pack_payload()
-        self.payload_length = len(payload_bytes)
-        return struct.pack(
-                        self.__hdr__fmt__, self.protocol_version_version,
-                        self.inverse_protocol_version,
-                        self.payload_type,
-                        self.payload_length                    
-                        ) + payload_bytes
-                        
-    def response(self):
-        return self._pack()    
     
     def __init__(self, power_mode):
         for attrs, value in self.__hdr__.items():
             setattr(self, attrs, value)
         self.power_mode = power_mode
-    
+        self.payload_type = doip_message_to_payload_type[DiagnosticPowerModeInfoResponse]
+        
 class AliveCheckRequest(DoipMessage):
+    
+    __payload_fmt__ = ''
     
     def _pack_payload(self):
         return struct.pack('')
-    
-    def _pack(self):
-        self.payload_type = doip_message_to_payload_type[AliveCheckRequest]
-        payload_bytes =  self._pack_payload()
-        self.payload_length = len(payload_bytes)
-        return struct.pack(
-                        self.__hdr__fmt__, self.protocol_version_version,
-                        self.inverse_protocol_version,
-                        self.payload_type,
-                        self.payload_length                    
-                        ) + payload_bytes
-                        
-    def request(self):
-        return self._pack() 
         
 class AliveCheckResponse(DoipMessage):
+    
+    __payload_fmt__ = '!BBBL'
     
     def _pack_payload(self):
         
@@ -189,25 +147,6 @@ class AliveCheckResponse(DoipMessage):
                     self.max_concurrent_sockets,
                     self.currently_opened_sockets,
                     self.max_data_size)
-    
-    def _pack(self):
-        
-        self.payload_type = doip_message_to_payload_type[AliveCheckResponse]
-        payload_bytes =  self._pack_payload()
-        
-        print(self.payload_length, payload_bytes)
-        
-        self.payload_length = len(payload_bytes)
-        
-        return struct.pack(
-                        self.__hdr__fmt__, self.protocol_version_version,
-                        self.inverse_protocol_version,
-                        self.payload_type,
-                        self.payload_length                    
-                        ) + payload_bytes
-                        
-    def response(self):
-        return self._pack()
     
     def __init__(self, 
                 node_tpe, 
