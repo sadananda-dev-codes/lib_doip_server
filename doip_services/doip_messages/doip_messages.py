@@ -1,3 +1,4 @@
+from types import MappingProxyType
 import struct
 from abc import abstractmethod
 from enum import IntEnum
@@ -77,7 +78,6 @@ class RoutingActivationResponse:
 
 class DiagnosticMessage:
     pass
-
 class DiagnosticMessageAck(DoipMessage):
 
     __payload_fmt__ = '!HHB'
@@ -99,7 +99,26 @@ class DiagnosticMessageAck(DoipMessage):
         self.target_address = target_address
         self.ack_code = ack
 class DiagnosticMessageNegResponse:
-    pass    
+    
+    __payload_fmt__ = '!HHB'
+    
+    def _pack(self):
+        return struct.pack(
+                        self.__payload_fmt__,
+                        self.source_address,
+                        self.target_address,
+                        self._nrc)
+    
+    def __init__(self, source_address = DoipHeaderEnum.SOURCE_ADDRESS.value,
+                target_address = DoipHeaderEnum.TARGET_ADDRESS.value,
+                nrc=0x00):
+        
+        for attrs, value in self.__hdr__.items():
+            setattr(self, attrs, value)
+        
+        self.source_address = source_address
+        self.target_address = target_address
+        self._nrc = nrc
     
 class EntityStatusRequest:
     __payload_fmt__ = ''
@@ -108,7 +127,55 @@ class EntityStatusRequest:
         return struct.pack('')
     
 class EntityStatusResponse:
-    pass
+    class NodeType:
+        DOIP_GATEWAY = 0x00 
+        DOIP_NODE = 0x01
+        RESERVED = 0x02
+        
+    def pack(self):
+        if self.max_data_size is None:
+            return struct.pack(
+                "!BBB",
+                self._node_type,
+                self._max_concurrent_sockets,
+                self._currently_open_sockets,
+            )
+        else:
+            return struct.pack(
+                "!BBBL",
+                self._node_type,
+                self._max_concurrent_sockets,
+                self._currently_open_sockets,
+                self._max_data_size,
+            )
+                    
+    @property
+    def node_type(self):
+        return self._node_tpe
+    
+    @property
+    def max_concurrent_sockets(self):
+        return self._max_concurrent_sockets
+    
+    @property
+    def currently_opened_sockets(self):
+        return self._currently_opened_sockets
+    
+    @property
+    def max_data_size(self):
+        return self._max_data_size
+
+    def __init__(self,
+                node_type = NodeType.DOIP_NODE,
+                max_concurrent_sockets = 1,
+                currently_opened_sockets = 0,
+                max_data_size = None
+                ):
+        
+        self._node_tpe = node_type
+        self._max_concurrent_sockets = max_concurrent_sockets
+        self._currently_opened_sockets = currently_opened_sockets
+        self._max_data_size = max_data_size
     
 class DiagnosticPowerModeInfoRequest(DoipMessage):
     
@@ -139,34 +206,48 @@ class AliveCheckRequest(DoipMessage):
         
 class AliveCheckResponse(DoipMessage):
     
-    __payload_fmt__ = '!BBBL'
+    __payload_fmt__ = '!B'
     
     def _pack_payload(self):
         
-        return struct.pack('!BBBL', self.node_tpe,
-                    self.max_concurrent_sockets,
-                    self.currently_opened_sockets,
-                    self.max_data_size)
+        return struct.pack(
+                        '!B',
+                        self.source_address
+                        )
     
     def __init__(self, 
-                node_tpe, 
-                max_concurrent_sockets,
-                currently_opened_sockets,
-                max_data_size):
+                source_address
+                ):
+        self.source_address = source_address
         
         for attrs, value in self.__hdr__.items():
             setattr(self, attrs, value)
-        
-        self.node_tpe = node_tpe
-        self.max_concurrent_sockets = max_concurrent_sockets
-        self.currently_opened_sockets = currently_opened_sockets
-        self.max_data_size = max_data_size
     
 class VehicleIdentificationRequest:
-    pass
+    __payload_fmt__ = ''
+    
+    def _pack_payload(self):
+        return struct.pack('')
 
 class VehicleIdentificationResponse:
-    pass
+    
+    __payload_fmt__ = '!HHBLL'
+    
+    def __init__(self,
+                vin,
+                logical_address,
+                eid,
+                gid,
+                further_action_required
+                ):
+        self._vin = vin
+        self._logical_address = logical_address
+        self._eid = eid
+        self._gid = gid
+        self._further_action_required = further_action_required
+        
+        pass
+        
     
 class VehicleIdentificationRequestWithVin:
     pass
@@ -189,6 +270,8 @@ doip_message_to_payload_type = {
     VehicleIdentificationResponse: 0x0004
     
     }
+
+doip_message_to_payload_type= MappingProxyType(doip_message_to_payload_type)
 
 doip_payload_type_to_message = {
     payload_type : payload_message for payload_message, payload_type in doip_message_to_payload_type.items()
