@@ -25,6 +25,8 @@ class DiagnosticsNRC(IntEnum):
 class DiagnosticSessionStatus:
     ACTIVE_SESSION = 1
     SESSION_TIME_OUT = False
+    ROUTING_ACTIVATION_DONE = False
+    POWER_MODE_STATUS = False
 
 class DiagnosticServices(IntEnum):
     POSITIVE_RESPONSE_CODE = 0x40

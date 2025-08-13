@@ -10,8 +10,8 @@ class DoipMessage:
     __hdr__ = {
             'protocol_version_version': DoipHeaderEnum.PROTOCOL_VERSION.value,
             'inverse_protocol_version': DoipHeaderEnum.INVERSE_PROTOCOL_VERSION.value,
-            'payload_type': 0, 
-            'payload_length':0, 
+            '_payload_type': 0, 
+            '_payload_length':0, 
             }
     
     __hdr__fmt__ = '!BBHI'
@@ -20,12 +20,22 @@ class DoipMessage:
     def _pack_payload(self):
         pass
     
-    def get_payload_length(self):
-        self.payload_length = len(self._pack_payload())
+    @property
+    def payload_length(self):
+        return self._payload_length
     
-    def get_payload_type(self):
-        self.payload_type = doip_message_to_payload_type[self.__class__]
-        return self.payload_type
+    @property
+    def payload_type(self):
+        return self._payload_type
+        
+    @payload_length.setter
+    def payload_length(self, _payload_length):
+        self._payload_length = _payload_length
+        return self._payload_length
+    
+    @payload_type.setter
+    def payload_type(self, _payload_type):
+        self._pack_type = _payload_type
     
     def _pack(self):
 
@@ -36,7 +46,6 @@ class DoipMessage:
                         self.payload_type,
                         self.payload_length
                         ) + self._pack_payload()
-            
     
     def _unpack(self):
         struct.pack('')
@@ -50,6 +59,10 @@ class DoipMessage:
     def __init__(self):
         for attrs, value in self.__hdr__.items():
             setattr(self, attrs, value)
+            
+        self._payload_length  = len(self._pack_payload())
+        self._payload_type = self.payload_type = doip_message_to_payload_type[self.__class__] 
+
 
 class RoutingActivationRequest:
     
@@ -98,6 +111,9 @@ class DiagnosticMessageAck(DoipMessage):
         self.source_address = source_address
         self.target_address = target_address
         self.ack_code = ack
+        
+        self._payload_length  = len(self._pack_payload())
+        self._payload_type = self.payload_type = doip_message_to_payload_type[self.__class__] 
 class DiagnosticMessageNegResponse:
     
     __payload_fmt__ = '!HHB'
@@ -119,6 +135,8 @@ class DiagnosticMessageNegResponse:
         self.source_address = source_address
         self.target_address = target_address
         self._nrc = nrc
+        self._payload_length  = len(self._pack_payload())
+        self._payload_type = self.payload_type = doip_message_to_payload_type[self.__class__] 
     
 class EntityStatusRequest:
     __payload_fmt__ = ''
@@ -176,6 +194,9 @@ class EntityStatusResponse:
         self._max_concurrent_sockets = max_concurrent_sockets
         self._currently_opened_sockets = currently_opened_sockets
         self._max_data_size = max_data_size
+        
+        self._payload_length  = len(self._pack_payload())
+        self._payload_type = self.payload_type = doip_message_to_payload_type[self.__class__] 
     
 class DiagnosticPowerModeInfoRequest(DoipMessage):
     
@@ -195,7 +216,9 @@ class DiagnosticPowerModeInfoResponse(DoipMessage):
         for attrs, value in self.__hdr__.items():
             setattr(self, attrs, value)
         self.power_mode = power_mode
-        self.payload_type = doip_message_to_payload_type[DiagnosticPowerModeInfoResponse]
+        
+        self._payload_length  = len(self._pack_payload())
+        self._payload_type = self.payload_type = doip_message_to_payload_type[self.__class__] 
         
 class AliveCheckRequest(DoipMessage):
     
@@ -216,44 +239,148 @@ class AliveCheckResponse(DoipMessage):
                         )
     
     def __init__(self, 
-                source_address
+                source_address = DoipHeaderEnum.SOURCE_ADDRESS.value
                 ):
         self.source_address = source_address
         
         for attrs, value in self.__hdr__.items():
             setattr(self, attrs, value)
+            
+        self._payload_length  = len(self._pack_payload())
+        self._payload_type = self.payload_type = doip_message_to_payload_type[self.__class__] 
     
-class VehicleIdentificationRequest:
+class VehicleIdentificationRequest(DoipMessage):
     __payload_fmt__ = ''
     
     def _pack_payload(self):
         return struct.pack('')
-
-class VehicleIdentificationResponse:
+class VehicleIdentificationResponse(DoipMessage):
     
-    __payload_fmt__ = '!HHBLL'
+    __payload_fmt__ = '!17BH6B6BBB'
+    
+    def _pack_payload(self):
+            return struct.pack(
+                self.__payload_fmt__,
+                *self._vin,
+                self._logical_address,
+                *self._eid,
+                *self._gid,
+                self._further_action_required,
+                self._sync_status,
+            )    
+    
+    @property
+    def vin(self):
+        return self._vin
+    
+    @property
+    def logical_address(self):
+        return self._logical_address
+    
+    @property
+    def eid(self):
+        return self._eid
+    
+    @property
+    def gid(self):
+        return self._gid
+    
+    @property
+    def sync_status(self):
+        return self._sync_status
+    
+    @property
+    def further_action_required(self):
+        return self._further_action_required
     
     def __init__(self,
-                vin,
-                logical_address,
-                eid,
-                gid,
-                further_action_required
+                vin = DoipHeaderEnum.VIN.value,
+                logical_address = DoipHeaderEnum.TARGET_ADDRESS.value,
+                eid = DoipHeaderEnum.EID.value,
+                gid = DoipHeaderEnum.GID.value,
+                further_action_required = 0x00,
+                sync_status = 0x00
                 ):
+        
+        for attrs, value in self.__hdr__.items():
+            setattr(self, attrs, value)
+        
         self._vin = vin
         self._logical_address = logical_address
         self._eid = eid
         self._gid = gid
         self._further_action_required = further_action_required
+        self._sync_status = sync_status
         
-        pass
+        self._payload_length  = len(self._pack_payload())
+        self._payload_type = self.payload_type = doip_message_to_payload_type[self.__class__] 
         
+class VehicleIdentificationRequestWithVin(DoipMessage):
     
-class VehicleIdentificationRequestWithVin:
-    pass
+    __hdr__fmt__ = '!BBHI'
+
+    def _pack_payload(self):
+        return struct.pack('17B',
+                           *self.vin
+                        )
     
-class VehicleIdentificationRequestWithEid:
-    pass
+    @property
+    def vin(self):
+        return self._vin
+    
+    @vin.setter
+    def vin(self, value):
+        if isinstance(value, (bytes, bytearray)):
+            if len(value) != 17:
+                raise ValueError("VIN must be exactly 17 bytes")
+            self._vin = list(value)
+        elif isinstance(value, list) and len(value) == 17:
+            self._vin = value
+        else:
+            raise ValueError("VIN must be a list of 17 bytes or a bytes object")
+    
+    def __init__(self, vin=DoipHeaderEnum.VIN.value):
+        
+        self._vin = vin
+        for attrs, value in self.__hdr__.items():
+            setattr(self, attrs, value)
+            
+        self._payload_length  = len(self._pack_payload())
+        self._payload_type = self.payload_type = doip_message_to_payload_type[self.__class__] 
+
+class VehicleIdentificationRequestWithEid(DoipMessage):
+    
+    __hdr__fmt__ = '!BBHI'
+    
+    def _pack_payload(self):
+        return struct.pack(
+                            '!6B', 
+                           *self.eid
+                        )
+    
+    @property
+    def eid(self):
+        return self._eid
+    
+    @eid.setter
+    def eid(self, value):
+        if isinstance(value, (bytes, bytearray)):
+            if len(value) != 17:
+                raise ValueError("EID must be exactly 17 bytes")
+            self._eid = list(value)
+        elif isinstance(value, list) and len(value) == 17:
+            self._eid = value
+        else:
+            raise ValueError("EID must be a list of 17 bytes or a bytes object")
+    
+    def __init__(self, eid=DoipHeaderEnum.EID.value):
+        self._eid = eid
+    
+        for attrs, value in self.__hdr__.items():
+            setattr(self, attrs, value)
+            
+        self._payload_length  = len(self._pack_payload())
+        self._payload_type = self.payload_type = doip_message_to_payload_type[self.__class__] 
 
 doip_message_to_payload_type = {
     RoutingActivationRequest: 0x0005,
@@ -281,16 +408,33 @@ doip_payload_type_to_message = {
 #routing_activation_request._pack()
 
 dpm = DiagnosticPowerModeInfoRequest()
-print(dpm.request().hex())
+byte_data = bytes.fromhex(dpm.request().hex())
+print(' '.join(f'{b:02x}' for b in byte_data))
 
 dpm = DiagnosticPowerModeInfoResponse(0x01)
-print(dpm.request().hex())
+byte_data = bytes.fromhex(dpm.request().hex())
+print(' '.join(f'{b:02x}' for b in byte_data))
 
 alive_check_request = AliveCheckRequest()
-print(alive_check_request.request().hex())
+byte_data = bytes.fromhex(alive_check_request.request().hex())
+print(' '.join(f'{b:02x}' for b in byte_data))
 
-alive_check_response = AliveCheckResponse(0x11, 0x22, 0x33, 0x44)
-print(alive_check_response.response().hex())
+alive_check_response = AliveCheckResponse(0x11)
+byte_data = bytes.fromhex(alive_check_response.request().hex())
+print(' '.join(f'{b:02x}' for b in byte_data))
 
 diaack = DiagnosticMessageAck()
-print(diaack.response().hex())
+byte_data = bytes.fromhex(diaack.request().hex())
+print(' '.join(f'{b:02x}' for b in byte_data))
+
+res = VehicleIdentificationResponse()
+byte_data = bytes.fromhex(res.request().hex())
+print(' '.join(f'{b:02x}' for b in byte_data))
+
+vvin = VehicleIdentificationRequestWithVin()
+byte_data = bytes.fromhex(vvin.request().hex())
+print(' '.join(f'{b:02x}' for b in byte_data))
+
+veid = VehicleIdentificationRequestWithEid()
+byte_data = bytes.fromhex(veid.request().hex())
+print(' '.join(f'{b:02x}' for b in byte_data))

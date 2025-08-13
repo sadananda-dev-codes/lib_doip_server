@@ -1,4 +1,4 @@
-from utils_constants.doip_utils import InstantiationNotAllowedError
+from src.lib_doip_server.utils_constants.doip_utils import InstantiationNotAllowedError
 
 class DiagnosticSessionLayer:
 

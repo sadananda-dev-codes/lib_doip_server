@@ -1,6 +1,7 @@
-def _doip_data_identifier_factory(routine_control , _method):
-
-    match data_identifier_class:
+def _doip_data_identifier_factory(
+                                routine_control,
+                                _method):
+    match routine_control:
         case DataIdentifiersFactoryClassEnum.VehicleManufacturerSparePartNumber.value:
             if _method == DataIdentifiersFactoryMethods.request.value:
                 return  VehicleManufacturerSparePartNumber().request()

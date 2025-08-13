@@ -1,5 +1,5 @@
 from enum import Enum
-from doip_diagnostic_session.doip_diagnostic_layer import DiagnosticSessionStatus
+from src.lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer import DiagnosticSessionStatus, DiagnosticSessionStatus
 
 class DataIdentifiersFactoryClassEnum(Enum):
     VehicleManufacturerSparePartNumber = 'VehicleManufacturerSparePartNumber'

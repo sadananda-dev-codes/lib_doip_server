@@ -1,6 +1,4 @@
-from enum import IntEnum, Enum
-from doip_diagnostic_session.doip_diagnostic_layer import DiagnosticSessionStatus
-
+from enum import IntEnum
 class DoipMsgTypes(IntEnum):
     """
         This is a Enum class which holds he integer values.

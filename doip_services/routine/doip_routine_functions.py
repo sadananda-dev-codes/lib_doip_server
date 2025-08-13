@@ -1,5 +1,6 @@
-import asyncio
-from doip_routine_control_util import (
+import time
+
+from src.lib_doip_server.doip_services.routine.doip_routine_control_util import (
                                     RoutineStatus,
                                     CheckMemoryRoutineEnum,
                                     CompleteAndCompatibilityCheckRoutineEnum,
@@ -8,65 +9,27 @@ from doip_routine_control_util import (
                                     OnDemandSelfTestRoutineEnum
                                     )
 
-__all__ = ['_check_memory_routine',
-           '_on_demand_self_test_routine',
-           '_programming_preconditions_routine',
-           '_check_upload_precondition_routine',
-           '_complete_and_compatibility_check_routine'
-           ]
+def _check_memory_routine(routine_control):
+    routine_control.routine_status = RoutineStatus.ROUTINE_CONTINUES.value
+    time.sleep(CheckMemoryRoutineEnum.ROUTINE_RUNTIME.value)
+    routine_control.routine_status = RoutineStatus.ROUTINE_EXECUTED.value
 
-async def _check_memory_routine(routine_control):
-    routine_control.task.routine_status = RoutineStatus.ROUTINE_CONTINUES.value
-    try:
-        routine_control.task.routine_status = RoutineStatus.ROUTINE_CONTINUES.value
-        for wait in range(CheckMemoryRoutineEnum.ROUTINE_RUNTIME.value):
-            #print('CheckMemoryRoutineEnum')
-            await asyncio.sleep(wait)
-    except asyncio.CancelledError:
-        raise asyncio.CancelledError
-    routine_control.task.routine_status = RoutineStatus.ROUTINE_EXECUTED.value
+def _on_demand_self_test_routine(routine_control):
+    routine_control.routine_status = RoutineStatus.ROUTINE_CONTINUES.value    
+    time.sleep(OnDemandSelfTestRoutineEnum.ROUTINE_RUNTIME.value)
+    routine_control.routine_status = RoutineStatus.ROUTINE_EXECUTED.value
 
-async def _on_demand_self_test_routine(routine_control):
+def _programming_preconditions_routine(routine_control):
+    routine_control.routine_status = RoutineStatus.ROUTINE_CONTINUES.value
+    time.sleep(ProgrammingPreconditionsRoutineEnum.ROUTINE_RUNTIME.value)
+    routine_control.routine_status = RoutineStatus.ROUTINE_EXECUTED.value
 
-    try:
-        routine_control.task.routine_status = RoutineStatus.ROUTINE_CONTINUES.value
-        for wait in range(OnDemandSelfTestRoutineEnum.ROUTINE_RUNTIME.value):
-            # print('OnDemandSelfTestRoutineEnum')
-            await asyncio.sleep(wait)
-    except asyncio.CancelledError:
-        raise asyncio.CancelledError
-        routine_control.task.routine_status = RoutineStatus.ROUTINE_EXECUTED.value
+def _check_upload_precondition_routine(routine_control):
+    routine_control.routine_status = RoutineStatus.ROUTINE_CONTINUES.value
+    time.sleep(CheckUploadPreconditionRoutineEnum.ROUTINE_RUNTIME.value)
+    routine_control.routine_status = RoutineStatus.ROUTINE_EXECUTED.value
 
-async def _programming_preconditions_routine(routine_control):
-
-    try:
-        routine_control.task.routine_status = RoutineStatus.ROUTINE_CONTINUES.value
-        for wait in range(ProgrammingPreconditionsRoutineEnum.ROUTINE_RUNTIME.value):
-            # print('ProgrammingPreconditionsRoutineEnum')
-            await asyncio.sleep(wait)
-    except asyncio.CancelledError:
-        raise asyncio.CancelledError
-    routine_control.task.routine_status = RoutineStatus.ROUTINE_EXECUTED.value
-
-async def _check_upload_precondition_routine(routine_control):
-
-    try:
-        routine_control.task.routine_status = RoutineStatus.ROUTINE_CONTINUES.value
-        for wait in range(CheckUploadPreconditionRoutineEnum.ROUTINE_RUNTIME.value):
-            # print('CheckUploadPreconditionRoutineEnum')
-            await asyncio.sleep(wait)
-    except asyncio.CancelledError:
-        raise asyncio.CancelledError
-    routine_control.task.routine_status = RoutineStatus.ROUTINE_EXECUTED.value
-
-async def _complete_and_compatibility_check_routine(routine_control):
-
-    try:
-        routine_control.task.routine_status = RoutineStatus.ROUTINE_CONTINUES.value
-        for wait in range(CompleteAndCompatibilityCheckRoutineEnum.ROUTINE_RUNTIME.value):
-            # print('CompleteAndCompatibilityCheckRoutineEnum')
-            await asyncio.sleep(wait)
-    except asyncio.CancelledError:
-        raise asyncio.CancelledError
-    routine_control.task.routine_status = RoutineStatus.ROUTINE_EXECUTED.value
-
+def _complete_and_compatibility_check_routine(routine_control):
+    routine_control.routine_status = RoutineStatus.ROUTINE_CONTINUES.value
+    time.sleep(CompleteAndCompatibilityCheckRoutineEnum.ROUTINE_RUNTIME.value)
+    routine_control.routine_status = RoutineStatus.ROUTINE_EXECUTED.value
