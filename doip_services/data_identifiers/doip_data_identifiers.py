@@ -2,7 +2,8 @@ import struct
 
 from src.lib_doip_server.doip_services.data_identifiers.doip_data_identifiers_util import (
     read_data_by_identifiers,
-    write_data_by_identifiers
+    write_data_by_identifiers,
+    get_fmt_did_response
 )
 
 from src.lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer import DiagnosticServices
@@ -59,7 +60,10 @@ class DataIdentifiers:
                 self.data_identifier_lsb,
                 self.data_identifier_msb
             )
-
+            
+    def get_did_response(self):
+        fmt = get_fmt_did_response(self.__class__.__name__)
+        return struct.pack(fmt, *self.data_identifier_response)
 class ReadDataByIdentifier(DataIdentifiers, metaclass=SingletonDataIdentifiers):
 
     def __init__(self):

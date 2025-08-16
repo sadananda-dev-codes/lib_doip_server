@@ -8,6 +8,23 @@ class DataIdentifiersFactoryClassEnum(Enum):
     SystemNameOrEngineType = 'SystemNameOrEngineType'
     VehicleIdentificationNumber = 'VehicleIdentificationNumber'
 
+def get_fmt_did_response(data_identifiers):
+    
+    if data_identifiers == DataIdentifiersFactoryClassEnum.VehicleManufacturerSparePartNumber.value:
+        return '5B'
+    
+    if data_identifiers == DataIdentifiersFactoryClassEnum.VehicleManufacturerEcuSoftwareVersionNumber.value:
+        return '3B'
+    
+    if data_identifiers == DataIdentifiersFactoryClassEnum.VehicleManufacturerECUHardWareNumber.value:
+        return '4B'
+    
+    if data_identifiers == DataIdentifiersFactoryClassEnum.SystemNameOrEngineType.value:
+        return '11B'
+    
+    if data_identifiers == DataIdentifiersFactoryClassEnum.VehicleIdentificationNumber.value:
+        return '6B'
+
 class DataIdentifiersFactoryMethods(Enum):
     request = 1
     response = 2

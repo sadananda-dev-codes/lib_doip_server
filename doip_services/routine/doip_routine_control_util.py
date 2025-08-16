@@ -15,17 +15,19 @@ class RoutineStatus(IntEnum):
     ROUTINE_EXECUTED = 3
 class CheckMemoryRoutineEnum(Enum):
     ROUTINE_ID = (0x02, 0x12, 0x01)
-    REQUEST_FORMAT = '6B'
-    RESPONSE_FORMAT = '11B'
-    ROUTINE_RUNTIME = 5
+    REQUEST_FORMAT = '5B'
+    RESPONSE_FORMAT = '6B'
+    RESPONSE_RESULT_FORMAT = '11B'
+    ROUTINE_RUNTIME = 7
     ROUTINE_TYPE = RoutineTypes.LONG_ROUTINE.value
     ROUTINE_STATUS = RoutineStatus.ROUTINE_NOT_STARTED.value
     ROUTINE_RESULTS_RESPONSE_DID = (DataIdentifiersFactoryClassEnum.VehicleManufacturerSparePartNumber.value,
                                     DataIdentifiersFactoryMethods.get_did_response.value)
 class CompleteAndCompatibilityCheckRoutineEnum(Enum):
     ROUTINE_ID = (0x03, 0x01, 0x40, 0x00 ,0x01, 0x00)
-    REQUEST_FORMAT = '9B'
-    RESPONSE_FORMAT = '12B'
+    REQUEST_FORMAT = '8B'
+    RESPONSE_FORMAT = '9B'
+    RESPONSE_RESULT_FORMAT = '12B'
     ROUTINE_RUNTIME = 15
     ROUTINE_TYPE = RoutineTypes.LONG_ROUTINE.value
     ROUTINE_STATUS = RoutineStatus.ROUTINE_NOT_STARTED.value
@@ -33,8 +35,9 @@ class CompleteAndCompatibilityCheckRoutineEnum(Enum):
                                     DataIdentifiersFactoryMethods.get_did_response.value)
 class CheckUploadPreconditionRoutineEnum(Enum):
     ROUTINE_ID = (0x05, 0x94, 0x76, 0x00)
-    REQUEST_FORMAT = '7B'
-    RESPONSE_FORMAT = '13B'
+    REQUEST_FORMAT = '6B'
+    RESPONSE_FORMAT = '7B'
+    RESPONSE_RESULT_FORMAT = '13B'
     ROUTINE_RUNTIME = 8
     ROUTINE_TYPE = RoutineTypes.LONG_ROUTINE.value
     ROUTINE_STATUS = RoutineStatus.ROUTINE_NOT_STARTED.value
@@ -42,16 +45,18 @@ class CheckUploadPreconditionRoutineEnum(Enum):
                                     DataIdentifiersFactoryMethods.get_did_response.value)
 class ProgrammingPreconditionsRoutineEnum(Enum):
     ROUTINE_ID = (0x02, 0x03)
-    REQUEST_FORMAT = '5B'
-    RESPONSE_FORMAT = '6B'
+    REQUEST_FORMAT = '4B'
+    RESPONSE_FORMAT = '5B'
+    RESPONSE_RESULT_FORMAT = '6B'
     ROUTINE_RUNTIME = 3
     ROUTINE_TYPE = RoutineTypes.SHORT_ROUTINE.value
     ROUTINE_STATUS = RoutineStatus.ROUTINE_NOT_STARTED.value
     ROUTINE_RESULTS_RESPONSE_DID = (None,)
 class OnDemandSelfTestRoutineEnum(Enum):
     ROUTINE_ID = (0x02, 0x02)
-    REQUEST_FORMAT = '5B'
-    RESPONSE_FORMAT = '6B'
+    REQUEST_FORMAT = '4B'
+    RESPONSE_FORMAT = '5B'
+    RESPONSE_RESULT_FORMAT = '6B'
     ROUTINE_RUNTIME = 2
     ROUTINE_TYPE = RoutineTypes.SHORT_ROUTINE.value
     ROUTINE_STATUS = RoutineStatus.ROUTINE_NOT_STARTED.value

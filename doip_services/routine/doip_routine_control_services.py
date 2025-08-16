@@ -10,12 +10,14 @@ from src.lib_doip_server.doip_services.routine.doip_routine_functions import (
                                                         _check_upload_precondition_routine,
                                                         _complete_and_compatibility_check_routine
                                                     )
+from src.lib_doip_server.doip_services.data_identifiers.doip_data_identifier_factory import _doip_data_identifier_factory
 class RoutineControlMeta(type):
 
     __routine_control_attrs__ = (
                                 'routine_id',
                                 'request_fmt',
                                 'response_fmt',
+                                'response_result_fmt',
                                 'routine_run_time',
                                 'routine_type',
                                 'routine_status',
@@ -57,7 +59,7 @@ class RoutineControlService(metaclass=RoutineControlMeta):
         self.thread = None
         
     def _request(self):
-        return  struct.pack(self.request_fmt, self.service_id, self.sub_function, *self.routine_id, self.routine_type | self.routine_status)
+        return  struct.pack(self.request_fmt, self.service_id, self.sub_function, *self.routine_id)
 
     def start(self)-> bytes:
         self.sub_function = RoutineSubfunction.START_ROUTINE.value
@@ -82,21 +84,24 @@ class RoutineControlService(metaclass=RoutineControlMeta):
         self.thread = threading.Thread(target=self._sub_routine, daemon=True)
         self.thread.start()
         
-    def response(self):
+    def response(self):     
+    
+        _status_and_type = ((self.routine_type <<4) | self.routine_status)
 
-        if self.sub_function == RoutineSubfunction.RESULT_ROUTINE.value and \
-                self.routine_type == RoutineTypes.LONG_ROUTINE.value:
-                    _routine_response_data = _doip_data_identifier_factory(*self.routine_result)
-                    return  struct.pack(self.response_fmt, self.service_id + DiagnosticServices.POSITIVE_RESPONSE_CODE.value, self.sub_function, *self.routine_id, self.routine_type | self.routine_status, *_routine_response_data)
-        else:            
-            return  struct.pack(self.request_fmt, self.service_id + DiagnosticServices.POSITIVE_RESPONSE_CODE.value, self.sub_function, *self.routine_id, self.routine_type | self.routine_status)
+        if self.sub_function == RoutineSubfunction.RESULT_ROUTINE \
+            and self.routine_type == RoutineTypes.LONG_ROUTINE.value:  
+
+            _did_response_data = _doip_data_identifier_factory(*self.routine_result)
+            
+            return  struct.pack(self.response_result_fmt, self.service_id + DiagnosticServices.POSITIVE_RESPONSE_CODE.value, self.sub_function, *self.routine_id, _status_and_type, *_did_response_data)
+        else:       
+            return  struct.pack(self.response_fmt, self.service_id + DiagnosticServices.POSITIVE_RESPONSE_CODE.value, self.sub_function, *self.routine_id, _status_and_type)
 
     def __str__(self):
         return f'{self.__class__.__name__}\n\t{self.service_id = }\n\t{self.sub_function = }\n\t{self.routine_id = }\n\t{self.routine_type = }\n\t{self.routine_status = } '
 class CheckMemoryRoutine(RoutineControlService):
     _routine_attribute_values = CheckMemoryRoutineEnum
     _sub_routine = _check_memory_routine
-    pass
 class OnDemandSelfTestRoutine(RoutineControlService):
     _routine_attribute_values = OnDemandSelfTestRoutineEnum
     _sub_routine = _on_demand_self_test_routine
@@ -116,48 +121,100 @@ class CompleteAndCompatibilityCheckRoutine(RoutineControlService):
 
 sadananda = CheckMemoryRoutine()
 
-print(sadananda.start().hex())
-print(sadananda.response().hex())
-print(sadananda.stop().hex())
-print(sadananda.response().hex())
-print(sadananda.result().hex())
-print(sadananda.response().hex())
+data = sadananda.start()
+print(" ".join(f"{b:02x}" for b in data))
 
-'''
+data = sadananda.response()
+print(" ".join(f"{b:02x}" for b in data))
 
+data = sadananda.stop()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.response()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.result()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.response()
+print(" ".join(f"{b:02x}" for b in data))
+
+print('')
 print('-----------------------------------------')
 
+
+
 sadananda = CompleteAndCompatibilityCheckRoutine()
-print(sadananda.start().hex())
-print(sadananda.response().hex())
-print(sadananda.stop().hex())
-print(sadananda.response().hex())
-print(sadananda.result().hex())
-print(sadananda.response().hex())
+data = sadananda.start()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.response()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.response()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.stop()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.response()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.result()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.response()
+print(" ".join(f"{b:02x}" for b in data))
+
 print('')
 print('-----------------------------------------')
 
 sadananda = CheckUploadPreconditionRoutine()
 print('')
-print(sadananda.start().hex())
-print(sadananda.response().hex())
-print(sadananda.stop().hex())
-print(sadananda.response().hex())
-print(sadananda.result().hex())
-print(sadananda.response().hex())
-print('')
+data = sadananda.start()
+print(" ".join(f"{b:02x}" for b in data))
 
+data = sadananda.response()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.stop()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.response()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.result()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.response()
+print(" ".join(f"{b:02x}" for b in data))
+
+print('')
 print('-----------------------------------------')
 
+
 sadananda = OnDemandSelfTestRoutine()
-print(sadananda)
+
 print('')
-print(sadananda.start().hex())
-print(sadananda.response().hex())
-print(sadananda.stop().hex())
-print(sadananda.response().hex())
-print(sadananda.result().hex())
-print(sadananda.response().hex())
+
+data = sadananda.start()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.response()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.stop()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.response()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.result()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.response()
+print(" ".join(f"{b:02x}" for b in data))
+
 print('')
 
 print('-----------------------------------------')
@@ -165,14 +222,26 @@ print('-----------------------------------------')
 sadananda = ProgrammingPreconditionsRoutine()
 print(sadananda)
 print('')
-print(sadananda.start().hex())
-print(sadananda.response().hex())
-print(sadananda.stop().hex())
-print(sadananda.response().hex())
-print(sadananda.result().hex())
-print(sadananda.response().hex())
+data = sadananda.start()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.response()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.stop()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.response()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.result()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = sadananda.response()
+print(" ".join(f"{b:02x}" for b in data))
+
 print('')
-'''
+
 
 import time
 time.sleep(10)
