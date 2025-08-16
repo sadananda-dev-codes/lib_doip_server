@@ -1,11 +1,10 @@
 import random
-from abc import ABC, abstractmethod
-from doip_services.dtc.doip_dtcs import *
-from doip_diagnostic_session.doip_diagnostic_layer import DiagnosticServices
 import struct
-from doip_services.dtc.doip_dtc_utils import  get_snap_shot_dids
+from abc import ABC, abstractmethod
 
-
+from src.lib_doip_server.doip_services.dtc.doip_dtcs import *
+from src.lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer import DiagnosticServices
+from src.lib_doip_server.doip_services.dtc.doip_dtc_utils import  get_snap_shot_dids
 
 class Dtc(ABC):
     service_id = 0x19
@@ -69,21 +68,23 @@ class ReadDtcExtendedSnapshot(Dtc):
 
     @classmethod
     def request(cls):
-        return struct.pack('6B', cls.service_id,
-                           cls.sub_function,
-                           *cls.extended_snap_shot_dtc.to_bytes(3, 'big'),
-                           cls.extended_snap_shot_id
-                           )
+        return struct.pack(
+                    '6B', cls.service_id,
+                    cls.sub_function,
+                    *cls.extended_snap_shot_dtc.to_bytes(3, 'big'),
+                    cls.extended_snap_shot_id
+                    )
 
     @classmethod
     def response(cls):
-        return struct.pack('8B', cls.service_id + DiagnosticServices.POSITIVE_RESPONSE_CODE.value,
-                           cls.sub_function,
-                           *cls.extended_snap_shot_dtc.to_bytes(3, 'big'),
-                           DTC[cls.extended_snap_shot_dtc].dtc_status,
-                           cls.extended_snap_shot_id,
-                           random.randint(1,0xFF)
-                           )
+        return struct.pack(
+                        '8B', cls.service_id + DiagnosticServices.POSITIVE_RESPONSE_CODE.value,
+                        cls.sub_function,
+                        *cls.extended_snap_shot_dtc.to_bytes(3, 'big'),
+                        DTC[cls.extended_snap_shot_dtc].dtc_status,
+                        cls.extended_snap_shot_id,
+                        random.randint(1,0xFF)
+                        )
 
 class ReadSupportedDtc(Dtc):
     sub_function = 0xA

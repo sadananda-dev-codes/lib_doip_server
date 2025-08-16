@@ -1,10 +1,11 @@
 from collections import UserDict
 from enum import Enum
-from  doip_services.data_identifiers.doip_data_identifiers import (GlobalRealTime,
-                                                                   TotalDistance,
-                                                                   VehicleBatteryVoltage,
-                                                                   UsageMode,
-                                                                   ElectricPowerLevel)
+from  src.lib_doip_server.doip_services.data_identifiers.doip_data_identifiers import (
+                                                            GlobalRealTime,
+                                                            TotalDistance,
+                                                            VehicleBatteryVoltage,
+                                                            UsageMode,
+                                                            ElectricPowerLevel)
 
 class DtcSnapShotDid(Enum):
     GlobalRealTime = GlobalRealTime()
