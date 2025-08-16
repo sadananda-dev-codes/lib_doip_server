@@ -1,5 +1,5 @@
 import struct
-from doip_diagnostic_session.doip_diagnostic_layer import DiagnosticServices
+from src.lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer import DiagnosticServices
 
 class ECUReset:
 
@@ -23,15 +23,19 @@ class ECUKeyOnOffReset(ECUReset):
     sub_function = 0x03
 
 e = ECUSoftReset()
-print(e.request().hex())
-print(e.response().hex())
+data = e.request()
+print(" ".join(f"{b:02x}" for b in data))
+data = e.response()
+print(" ".join(f"{b:02x}" for b in data))
 
 e = ECUHardReset()
-print(e.request().hex())
-print(e.response().hex())
+data = e.request()
+print(" ".join(f"{b:02x}" for b in data))
+data = e.response()
+print(" ".join(f"{b:02x}" for b in data))
 
 e = ECUKeyOnOffReset()
-print(e.request().hex())
-print(e.response().hex())
-
-
+data = e.request()
+print(" ".join(f"{b:02x}" for b in data))
+data = e.response()
+print(" ".join(f"{b:02x}" for b in data))
