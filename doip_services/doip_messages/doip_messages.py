@@ -12,7 +12,7 @@ class DoipMessage:
             'inverse_protocol_version': DoipHeaderEnum.INVERSE_PROTOCOL_VERSION.value,
             '_payload_type': 0, 
             '_payload_length':0, 
-            }
+        }
     
     __hdr__fmt__ = '!BBHI'
     
@@ -96,14 +96,19 @@ class DiagnosticMessageAck(DoipMessage):
     __payload_fmt__ = '!HHB'
     
     def _pack_payload(self):
-        return struct.pack(self.__payload_fmt__,
+        return struct.pack(
+                        self.__payload_fmt__,
                         self.source_address, 
                         self.target_address, 
-                        self.ack_code)
+                        self.ack_code
+                        )
     
-    def __init__(self, source_address = DoipHeaderEnum.SOURCE_ADDRESS.value,
+    def __init__(
+                self, 
+                source_address = DoipHeaderEnum.SOURCE_ADDRESS.value,
                 target_address = DoipHeaderEnum.TARGET_ADDRESS.value,
-                ack=0x00):
+                ack=0x00
+                ):
         
         for attrs, value in self.__hdr__.items():
             setattr(self, attrs, value)
@@ -120,14 +125,18 @@ class DiagnosticMessageNegResponse:
     
     def _pack(self):
         return struct.pack(
+                    
                         self.__payload_fmt__,
                         self.source_address,
                         self.target_address,
-                        self._nrc)
+                        self._nrc
+                    )
     
-    def __init__(self, source_address = DoipHeaderEnum.SOURCE_ADDRESS.value,
-                target_address = DoipHeaderEnum.TARGET_ADDRESS.value,
-                nrc=0x00):
+    def __init__(
+            self, source_address = DoipHeaderEnum.SOURCE_ADDRESS.value,
+            target_address = DoipHeaderEnum.TARGET_ADDRESS.value,
+            nrc=0x00
+            ):
         
         for attrs, value in self.__hdr__.items():
             setattr(self, attrs, value)
@@ -183,7 +192,8 @@ class EntityStatusResponse:
     def max_data_size(self):
         return self._max_data_size
 
-    def __init__(self,
+    def __init__(
+                self,
                 node_type = NodeType.DOIP_NODE,
                 max_concurrent_sockets = 1,
                 currently_opened_sockets = 0,
@@ -293,7 +303,8 @@ class VehicleIdentificationResponse(DoipMessage):
     def further_action_required(self):
         return self._further_action_required
     
-    def __init__(self,
+    def __init__(
+                self,
                 vin = DoipHeaderEnum.VIN.value,
                 logical_address = DoipHeaderEnum.TARGET_ADDRESS.value,
                 eid = DoipHeaderEnum.EID.value,
@@ -320,9 +331,7 @@ class VehicleIdentificationRequestWithVin(DoipMessage):
     __hdr__fmt__ = '!BBHI'
 
     def _pack_payload(self):
-        return struct.pack('17B',
-                           *self.vin
-                        )
+        return struct.pack('17B',*self.vin)
     
     @property
     def vin(self):
@@ -353,11 +362,8 @@ class VehicleIdentificationRequestWithEid(DoipMessage):
     __hdr__fmt__ = '!BBHI'
     
     def _pack_payload(self):
-        return struct.pack(
-                            '!6B', 
-                           *self.eid
-                        )
-    
+        return struct.pack('!6B', *self.eid)
+
     @property
     def eid(self):
         return self._eid

@@ -13,18 +13,15 @@ class DiagnosticSessionLayer:
 
     @classmethod
     def reset_s3_server_time(cls):
-        cls.__s3_server_time = 0
-
-    @classmethod
-    
+        cls.__s3_server_time = 0    
 
     @classmethod
     def get_s3_server_time(cls):
         return cls.__s3_server_time
 
     @classmethod
-    def set_s3_server_time(cls,
-                           _s3_server_time):
+    def set_s3_server_time(cls, _s3_server_time):
+        
         if cls.__s3_server_time != _s3_server_time:
             cls.__s3_server_time = _s3_server_time
 
@@ -33,8 +30,7 @@ class DiagnosticSessionLayer:
         return cls.__active_session
 
     @classmethod
-    def set_active_session(cls,
-                           _active_session=1):
+    def set_active_session(cls, _active_session=1):
         if cls.__active_session != _active_session:
             cls.__active_session = _active_session
 
@@ -49,4 +45,3 @@ class DiagnosticSessionLayer:
     @classmethod
     def is_security_key_unlocked(cls):
         return True if cls.__security_state else False
-

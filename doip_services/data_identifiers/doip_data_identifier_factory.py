@@ -1,10 +1,7 @@
 from src.lib_doip_server.doip_services.data_identifiers.doip_data_identifiers_util import *
 from src.lib_doip_server.doip_services.data_identifiers.doip_data_identifiers import *
 
-def _doip_data_identifier_factory(
-                                _data_identifier,
-                                _method
-                                ):
+def _doip_data_identifier_factory(_data_identifier, _method):
     
     if _data_identifier == DataIdentifiersFactoryClassEnum.VehicleManufacturerSparePartNumber.value:
         if _method == DataIdentifiersFactoryMethods.request.value:

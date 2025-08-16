@@ -3,9 +3,9 @@ import struct
 from functools import wraps
 from abc import ABCMeta,  abstractmethod
 
-from doip_services.security.doip_security_service_util import security_util , SecurityKeyEnum
-from doip_services.security.doip_security_service_key import yield_keys
-from doip_diagnostic_session.doip_diagnostic_layer import *
+from src.lib_doip_server.doip_services.security.doip_security_service_util import security_util , SecurityKeyEnum
+from src.lib_doip_server.doip_services.security.doip_security_service_key import yield_keys
+from src.lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer import *
 
 def generate_seed():
         return random.randint(1, 0xFF)
@@ -90,6 +90,7 @@ class SecurityServiceLevelOneKey(SecurityService):
     
     def response(self):
         if security_util.NRC:
+            
             return struct.pack(
                         '!BBB', 
                         0x7F,
@@ -98,7 +99,9 @@ class SecurityServiceLevelOneKey(SecurityService):
                         )
         else:
             if not security_util._is_security_key_unlocked:
+                
                 security_util.unlock_security_service()
+                
                 return struct.pack(
                             '!BB',
                             self.service_id + DiagnosticServices.POSITIVE_RESPONSE_CODE.value,

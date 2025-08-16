@@ -3,9 +3,8 @@ import struct
 from src.lib_doip_server.doip_services.data_identifiers.doip_data_identifiers_util import (
     read_data_by_identifiers,
     write_data_by_identifiers,
-    get_fmt_did_response
+    get_fmt_did_response,
 )
-
 from src.lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer import DiagnosticServices
 class SingletonDataIdentifiers(type):
     def __call__(cls, *args, **kwargs):
@@ -35,14 +34,23 @@ class DataIdentifiers:
     def request(self, write_did = []):
 
         if isinstance(self, ReadDataByIdentifier):
-            return struct.pack(self.request_format, self.service_id, self.data_identifier_lsb,
-                        self.data_identifier_msb)
+            return struct.pack(
+                        self.request_format,
+                        self.service_id, 
+                        self.data_identifier_lsb,
+                        self.data_identifier_msb
+                        )
             
         if isinstance(self, WriteDataByIdentifier):
             if write_did:
                 self.data_identifier_response = write_did
-            return struct.pack(self.request_format, self.service_id, self.data_identifier_lsb,
-                               self.data_identifier_msb, *self.data_identifier_response)
+            return struct.pack(
+                            self.request_format, 
+                            self.service_id, 
+                            self.data_identifier_lsb,
+                            self.data_identifier_msb, 
+                            *self.data_identifier_response
+                            )
 
     def response(self):
         if isinstance(self, ReadDataByIdentifier):
