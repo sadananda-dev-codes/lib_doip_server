@@ -36,7 +36,7 @@ class DataIdentifiers:
         if isinstance(self, ReadDataByIdentifier):
             return struct.pack(
                         self.request_format,
-                        self.service_id, 
+                        self.service_id,
                         self.data_identifier_lsb,
                         self.data_identifier_msb
                         )
@@ -46,9 +46,9 @@ class DataIdentifiers:
                 self.data_identifier_response = write_did
             return struct.pack(
                             self.request_format, 
-                            self.service_id, 
+                            self.service_id,
                             self.data_identifier_lsb,
-                            self.data_identifier_msb, 
+                            self.data_identifier_msb,
                             *self.data_identifier_response
                             )
 
@@ -111,66 +111,110 @@ class ElectricPowerLevel(WriteDataByIdentifier):
 print('Sadananda Maharaj')
 
 a = ActiveDiagnosticSession()
-print(list(a.request().hex()))
-print(list(a.response().hex()))
+data = a.request()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = a.response()
+print(" ".join(f"{b:02x}" for b in data))
+
+print('------------------------------------')
 
 s = SystemNameOrEngineType()
-print(list(s.request().hex()))
-print(list(s.response().hex()))
+
+data = s.request()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = s.response()
+print(" ".join(f"{b:02x}" for b in data))
+
+print('------------------------------------')
 
 v = VehicleIdentificationNumber()
-print(list(v.request().hex()))
-print(list(v.response().hex()))
+data = v.request()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = v.response()
+print(" ".join(f"{b:02x}" for b in data))
+print('------------------------------------')
 
 s = SystemNameOrEngineType()
-print(list(s.request().hex()))
-print(list(s.response().hex()))
+data = s.request()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = s.response()
+print(" ".join(f"{b:02x}" for b in data))
+print('------------------------------------')
 
 _v = VehicleManufacturerECUHardWareNumber()
-print(list(_v.request().hex()))
-print(list(_v.response().hex()))
+data = _v.request()
+print(" ".join(f"{b:02x}" for b in data))
+
+data = _v.response()
+print(" ".join(f"{b:02x}" for b in data))
+print('------------------------------------')
 
 g = GlobalRealTime()
-print(g.request().hex())
-print(g.response().hex())
+data = g.request()
+print(" ".join(f"{b:02x}" for b in data))
 
-print('------------------------')
+data = g.response()
+print(" ".join(f"{b:02x}" for b in data))
+
+print('------------------------------------')
 
 t = TotalDistance()
-print(t.request().hex())
-print(t.response().hex())
+data = t.request()
+print(" ".join(f"{b:02x}" for b in data))
 
-print('------------------------')
+data = t.response()
+print(" ".join(f"{b:02x}" for b in data))
+
+print('----------------------------------')
 
 v = VehicleBatteryVoltage()
-print(v.request().hex())
-print(v.response().hex())
+data = v.request()
+print(" ".join(f"{b:02x}" for b in data))
 
-print('------------------------')
+data = v.response()
+print(" ".join(f"{b:02x}" for b in data))
+
+print('-----------------------------------')
 
 u = UsageMode()
-print(u.request().hex())
-print(u.response().hex())
+data = u.request()
+print(" ".join(f"{b:02x}" for b in data))
 
-print('------------------------')
+data = u.response()
+print(" ".join(f"{b:02x}" for b in data))
+
+print('------------------------------------')
 
 e = ElectricPowerLevel()
-print(e.request([32]).hex())
-print(e.response().hex())
+data = e.request([32])
+print(" ".join(f"{b:02x}" for b in data))
+
+data = e.response()
+print(" ".join(f"{b:02x}" for b in data))
+
 print(e.data_identifier_response)
 print(write_data_by_identifiers)
 
 e1 = ElectricPowerLevel()
-print(e1.request([85]).hex())
-print(e1.response().hex())
+data = e1.request([85])
+print(" ".join(f"{b:02x}" for b in data))
+
+data = e1.response()
+print(" ".join(f"{b:02x}" for b in data))
+
 print(e1.data_identifier_response)
 print(write_data_by_identifiers)
 
 u1 = UsageMode()
-print(u1.request().hex())
-print(u1.response().hex())
+data = u1.request()
+print(" ".join(f"{b:02x}" for b in data))
 
-print(hex(id(e)) , hex(id(e1)), hex(id(u)), hex(id(u1)))
+data = u1.response()
+print(" ".join(f"{b:02x}" for b in data))
 
 print('End of my requirement')
 print('')

@@ -1,0 +1,46 @@
+
+ActiveDiagnosticSession:
+  session:[0x01, 0x02, 0x03]
+  security_service:0
+
+VehicleManufacturerSparePartNumber:
+  session:[0x02]
+  security_service:1
+
+VehicleManufacturerEcuSoftwareVersionNumber:
+  session:[0x02]
+  security_service:1
+
+VehicleManufacturerECUHardWareNumber:
+  session:[0x02, 0x03]
+  security_service:1
+
+SystemNameOrEngineType:
+  session:[0x02, 0x03]
+  security_service:0
+
+VehicleIdentificationNumber:
+  session:[0x01, 0x02, 0x03]
+  security_service:0
+
+### write data by identifiers
+
+GlobalRealTime:
+  session:[0x03]
+  security_service:0x11
+
+TotalDistance:
+  session:[0x03]
+  security_service:0x11
+
+VehicleBatteryVoltage:
+  session:[0x03]
+  security_service:0x11
+
+UsageMode:
+  session:[0x03]
+  security_service:0x11
+
+ElectricPowerLevel:
+  session:[0x03]
+  security_service:0x11
