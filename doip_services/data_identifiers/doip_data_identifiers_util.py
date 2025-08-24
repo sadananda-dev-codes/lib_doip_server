@@ -1,7 +1,8 @@
 from enum import Enum
-from src.lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer import DiagnosticSessionStatus, DiagnosticSessionStatus
+from lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer_utils import DiagnosticSessionStatus, DiagnosticSessionStatus
 
 class DataIdentifiersFactoryClassEnum(Enum):
+    ActiveDiagnosticSession = 'ActiveDiagnosticSession'
     VehicleManufacturerSparePartNumber = 'VehicleManufacturerSparePartNumber'
     VehicleManufacturerEcuSoftwareVersionNumber = 'VehicleManufacturerEcuSoftwareVersionNumber'
     VehicleManufacturerECUHardWareNumber = 'VehicleManufacturerECUHardWareNumber'
@@ -91,7 +92,7 @@ write_data_by_identifiers = {
         
         'TotalDistance':(
             0xDD,
-            0x00,
+            0x32,
             '6B',
             '3B',
             [0x56, 0x32, 0x85]
@@ -99,7 +100,7 @@ write_data_by_identifiers = {
         
         'VehicleBatteryVoltage':(
             0xDD,
-            0x00,
+            0x85,
             '4B',
             '3B',
             [0x32]
@@ -107,7 +108,7 @@ write_data_by_identifiers = {
         
         'UsageMode':(
             0xDD,
-            0x00,
+            0x56,
             '4B',
             '3B',
             [0x02]
@@ -115,7 +116,7 @@ write_data_by_identifiers = {
         
         'ElectricPowerLevel':(
             0xDD,
-            0x00,
+            0x51,
             '4B',
             '3B',
             [0x0F]

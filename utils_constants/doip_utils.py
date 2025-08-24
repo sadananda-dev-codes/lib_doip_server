@@ -6,8 +6,7 @@ class DoipException(Exception):
     """
 
     """
-    def __init__(self,
-                 message = 'invalid doip message'):
+    def __init__(self, message = 'invalid doip message'):
         self.msg = message
         super().__init__(self.msg)
 
@@ -15,8 +14,7 @@ class InstantiationNotAllowedError(DoipException):
     """
     """
 
-    def __init__(self,
-                 _cls):
+    def __init__(self, _cls):
         message = f'Instantiation of {_cls.__name__} not allowed'
         self.msg = message
 
@@ -27,8 +25,7 @@ class InvalidEndpointException(DoipException):
 
     """
 
-    def __init__(self,
-                 message='Invalid Endpoint Exception'):
+    def __init__(self, message='Invalid Endpoint Exception'):
         self.msg = message
 
         super().__init__(self.msg)
@@ -57,7 +54,6 @@ def calculate_hash(*args: Tuple[str, str]):
 
 def check_network_endpoint(ip_endpoint: Dict[str, int]):
     """
-
 
     """
     if not is_valid_ip(**ip_endpoint):

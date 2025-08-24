@@ -3,6 +3,16 @@ from src.lib_doip_server.doip_services.data_identifiers.doip_data_identifiers im
 
 def _doip_data_identifier_factory(_data_identifier, _method):
     
+    print(_data_identifier, _method)
+    
+    if _data_identifier == DataIdentifiersFactoryClassEnum.ActiveDiagnosticSession.value:
+        if _method == DataIdentifiersFactoryMethods.request.value:
+            return  ActiveDiagnosticSession().request()
+        if _method == DataIdentifiersFactoryMethods.response.value:
+            return  ActiveDiagnosticSession().response()
+        if _method == DataIdentifiersFactoryMethods.get_did_response.value:
+            return  ActiveDiagnosticSession().get_did_response() 
+    
     if _data_identifier == DataIdentifiersFactoryClassEnum.VehicleManufacturerSparePartNumber.value:
         if _method == DataIdentifiersFactoryMethods.request.value:
             return  VehicleManufacturerSparePartNumber().request()

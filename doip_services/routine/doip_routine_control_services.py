@@ -2,7 +2,7 @@ import struct
 import threading
 
 from src.lib_doip_server.doip_services.routine.doip_routine_control_util import *
-from src.lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer import DiagnosticServices
+from lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer_utils import DiagnosticServices
 from src.lib_doip_server.doip_services.routine.doip_routine_functions import (
                                                         _check_memory_routine,
                                                         _on_demand_self_test_routine,
@@ -10,7 +10,7 @@ from src.lib_doip_server.doip_services.routine.doip_routine_functions import (
                                                         _check_upload_precondition_routine,
                                                         _complete_and_compatibility_check_routine
                                                     )
-from src.lib_doip_server.doip_services.data_identifiers.doip_data_identifier_factory import _doip_data_identifier_factory
+from lib_doip_server.doip_services.data_identifiers.doip_data_identifiers_factory import _doip_data_identifier_factory
 class RoutineControlMeta(type):
 
     __routine_control_attrs__ = (

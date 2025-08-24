@@ -3,7 +3,7 @@ import struct
 from abc import ABC, abstractmethod
 
 from src.lib_doip_server.doip_services.dtc.doip_dtcs import *
-from src.lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer import DiagnosticServices
+from lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer_utils import DiagnosticServices
 from src.lib_doip_server.doip_services.dtc.doip_dtc_utils import  get_snap_shot_dids
 
 class Dtc(ABC):

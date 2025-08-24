@@ -5,7 +5,7 @@ from abc import ABCMeta,  abstractmethod
 
 from src.lib_doip_server.doip_services.security.doip_security_service_util import security_util , SecurityKeyEnum
 from src.lib_doip_server.doip_services.security.doip_security_service_key import yield_keys
-from src.lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer import *
+from lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer_utils import *
 
 def generate_seed():
         return random.randint(1, 0xFF)

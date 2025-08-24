@@ -1,5 +1,5 @@
 import struct
-from src.lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer import DiagnosticLayerEnum, DiagnosticServices, DiagnosticSessionStatus
+from lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer_utils import DiagnosticLayerEnum, DiagnosticServices, DiagnosticSessionStatus
 
 class DiagnosticSession:
 
