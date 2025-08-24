@@ -1,4 +1,3 @@
-
 from src.lib_doip_server.doip_services.data_identifiers.doip_data_identifiers_util import (
                                                                         read_data_by_identifiers,
                                                                         write_data_by_identifiers,
@@ -8,18 +7,17 @@ from src.lib_doip_server.configs.read_yaml import *
 from src.lib_doip_server.configs.doip_sessions_status import DoIPState
 from src.lib_doip_server.doip_services.data_identifiers.doip_data_identifiers_factory import _doip_data_identifier_factory
 from src.lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer_utils import DiagnosticsNRC
-
 class DataIdentifierHandler:
     service = []
     session = []
     security_service = 0x00
-    response = []
+    response = None
     
     @classmethod
     def reset_session_details(cls):
         cls.service.clear()
         cls.session.clear()
-        cls.response.clear()
+        cls.response = None
         cls.security_service = 0x00
 
 def _load_data_identifier(_did, sid=0x22):
@@ -35,8 +33,6 @@ def _load_data_identifier(_did, sid=0x22):
 def _is_request_out_of_range(did, sid=0x22):
     
     _load_data_identifier(did, sid)
-    
-    print(DataIdentifierHandler.service)
     
     if  DataIdentifierHandler.service == []:
         return False
@@ -56,6 +52,8 @@ def _check_security_access():
         (DataIdentifierHandler.security_service == DoIPState.security_unlocked)
 
 def _doip_data_identifiers_handler(did, sid):
+
+    DataIdentifierHandler.reset_session_details()        
     
     if _is_request_out_of_range(did, sid):
     
@@ -64,10 +62,12 @@ def _doip_data_identifiers_handler(did, sid):
         if _check_session_supported():
             
             if  _check_security_access():
+                
                 response = _doip_data_identifier_factory(
                                     DataIdentifierHandler.service[0],
                                     DataIdentifiersFactoryMethods.response.value
                                     )
+                
             else:
                 response = DoIPState.nrc(sid, DiagnosticsNRC.SECURITY_ACCESS_DENIED.value)
                 
@@ -76,13 +76,13 @@ def _doip_data_identifiers_handler(did, sid):
     else:
         response = DoIPState.nrc(sid, DiagnosticsNRC.REQUEST_OUT_OF_RANGE.value)
 
-    DataIdentifierHandler.reset_session_details()    
     return response
-    
 
-_doip_data_identifiers_handler(0xf186, 0x22)
+print(_doip_data_identifiers_handler(0xf186, 0x22).hex())
 print('')
-_doip_data_identifiers_handler(0xf186, 0x23)
+
+print(_doip_data_identifiers_handler(0xf186, 0x23).hex())
 print('')
-_doip_data_identifiers_handler(0xf199, 0x22)
+
+print(_doip_data_identifiers_handler(0xf199, 0x22).hex())
 print('')
