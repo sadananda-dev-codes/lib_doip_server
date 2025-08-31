@@ -1,5 +1,11 @@
 from enum import Enum, IntEnum
 from src.lib_doip_server.doip_services.data_identifiers.doip_data_identifiers_util import *
+
+class RoutineControlIdentifiersFactoryMethods(Enum):
+    request = 1
+    response = 2
+    get_did_response = 3
+
 class RoutineSubfunction(IntEnum):
     START_ROUTINE = 1
     STOP_ROUTINE = 2
@@ -67,3 +73,11 @@ class RoutineControlFactoryClassEnum(Enum):
     ProgrammingPreconditionsRoutine = 'ProgrammingPreconditionsRoutine'
     CheckUploadPreconditionRoutine = 'CheckUploadPreconditionRoutine'
     CompleteAndCompatibilityCheckRoutine = 'CompleteAndCompatibilityCheckRoutine'
+    
+routine_control_identifiers = {
+    'CheckMemoryRoutine': CheckMemoryRoutineEnum.ROUTINE_ID.value,
+    'CompleteAndCompatibilityCheckRoutine': CompleteAndCompatibilityCheckRoutineEnum.ROUTINE_ID.value,
+    'ProgrammingPreconditionsRoutine': ProgrammingPreconditionsRoutineEnum.ROUTINE_ID.value,
+    'CheckUploadPreconditionRoutine': CheckUploadPreconditionRoutineEnum.ROUTINE_ID.value, 
+    'OnDemandSelfTestRoutine': OnDemandSelfTestRoutineEnum.ROUTINE_ID.value
+    }

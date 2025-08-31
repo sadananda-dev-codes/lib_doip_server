@@ -1,19 +1,19 @@
-CheckMemoryRoutine(RoutineControlService):
-  session:[0x02]
-  security_service:0x11
+CheckMemoryRoutine:
+  session: [!!int 0x02]
+  security_service: 0x11
     
-OnDemandSelfTestRoutine(RoutineControlService):
-  session:[0x03]
-  security_service:0
+OnDemandSelfTestRoutine:
+  session: [!!int 0x03]
+  security_service: 0
     
-ProgrammingPreconditionsRoutine(RoutineControlService):
-  session:[0x03]
-  security_service:0
+ProgrammingPreconditionsRoutine:
+  session: [!!int 0x03]
+  security_service: 0
     
-CheckUploadPreconditionRoutine(RoutineControlService):
-  session:[0x03]
-  security_service:0x11
+CheckUploadPreconditionRoutine:
+  session: [!!int 0x03]
+  security_service: 0x11
     
-CompleteAndCompatibilityCheckRoutine(RoutineControlService):
-  session:[0x02]
-  security_service:0x11
+CompleteAndCompatibilityCheckRoutine:
+  session: [!!int 0x02]
+  security_service: 0x11

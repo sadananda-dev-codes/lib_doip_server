@@ -8,6 +8,11 @@ class DataIdentifiersFactoryClassEnum(Enum):
     VehicleManufacturerECUHardWareNumber = 'VehicleManufacturerECUHardWareNumber'
     SystemNameOrEngineType = 'SystemNameOrEngineType'
     VehicleIdentificationNumber = 'VehicleIdentificationNumber'
+    GlobalRealTime = 'GlobalRealTime'
+    TotalDistance = 'TotalDistance'
+    VehicleBatteryVoltage = 'VehicleBatteryVoltage'
+    UsageMode = 'UsageMode'
+    ElectricPowerLevel ='ElectricPowerLevel'
 
 def get_fmt_did_response(data_identifiers):
     
