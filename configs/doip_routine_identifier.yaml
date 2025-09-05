@@ -3,7 +3,7 @@ CheckMemoryRoutine:
   security_service: 0x11
     
 OnDemandSelfTestRoutine:
-  session: [!!int 0x03]
+  session: [!!int 0x01, !!int 0x03]
   security_service: 0
     
 ProgrammingPreconditionsRoutine:

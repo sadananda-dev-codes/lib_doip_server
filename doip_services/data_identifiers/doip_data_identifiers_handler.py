@@ -22,7 +22,7 @@ class DataIdentifierHandler:
 
 def _load_data_identifier(_did, sid=0x22):
     
-    data_identifiers = read_data_by_identifiers.items() if sid==0x22 else write_data_by_identifiers.values() if sid==0x2E else []
+    data_identifiers = read_data_by_identifiers.items() if sid==0x22 else write_data_by_identifiers.items() if sid==0x2E else []
     
     for service, did in data_identifiers:
         read_did = did[0]
@@ -94,5 +94,19 @@ print('')
 print(_doip_data_identifiers_handler(0xf190, 0x22).hex())
 print('')
 
+
+print('Sadananda Maharaj')
 print(_doip_data_identifiers_handler(0xDD00, 0x2E).hex())
+print('')
+
+print(_doip_data_identifiers_handler(0xDD32, 0x2E).hex())
+print('')
+
+print(_doip_data_identifiers_handler(0xDD85, 0x2E).hex())
+print('')
+
+print(_doip_data_identifiers_handler(0xDD56, 0x2E).hex())
+print('')
+
+print(_doip_data_identifiers_handler(0xDD51, 0x2E).hex())
 print('')

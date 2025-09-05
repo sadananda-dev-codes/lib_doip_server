@@ -9,40 +9,35 @@ from src.lib_doip_server.doip_services.routine.doip_routine_control_services imp
 
 def _doip_routine_identifier_factory(_data_identifier, _method):
     
+    
+    print(_data_identifier, _method)
+    
+    diag_object = None
+    
     if _data_identifier == RoutineControlFactoryClassEnum.CheckMemoryRoutine.value:
-        if _method == DataIdentifiersFactoryMethods.request.value:
-            return  CheckMemoryRoutine().request()
-        if _method == DataIdentifiersFactoryMethods.response.value:
-            return  CheckMemoryRoutine().response()
+        diag_object = CheckMemoryRoutine()
 
     if _data_identifier == RoutineControlFactoryClassEnum.OnDemandSelfTestRoutine.value:
-        
-        if _method == DataIdentifiersFactoryMethods.request.value:
-            return OnDemandSelfTestRoutine().request()
-        if _method == DataIdentifiersFactoryMethods.response.value:
-            return OnDemandSelfTestRoutine().response()
-        
+        diag_object =  OnDemandSelfTestRoutine()
     
     if _data_identifier == RoutineControlFactoryClassEnum.ProgrammingPreconditionsRoutine.value:    
-    
-        if _method == DataIdentifiersFactoryMethods.request.value:
-            return ProgrammingPreconditionsRoutine().request()
-        if _method == DataIdentifiersFactoryMethods.response.value:
-            return ProgrammingPreconditionsRoutine().response()
+        diag_object = ProgrammingPreconditionsRoutine()
     
     if _data_identifier == RoutineControlFactoryClassEnum.CheckUploadPreconditionRoutine.value:
-        
-        if _method == DataIdentifiersFactoryMethods.request.value:
-            return CheckUploadPreconditionRoutine().request()
-        if _method == DataIdentifiersFactoryMethods.response.value:
-            return CheckUploadPreconditionRoutine().response()
+        diag_object = CheckUploadPreconditionRoutine()
     
     if _data_identifier == RoutineControlFactoryClassEnum.CompleteAndCompatibilityCheckRoutine.value:
-        
-        if _method == DataIdentifiersFactoryMethods.request.value:
-            return CompleteAndCompatibilityCheckRoutine().request()
-        if _method == DataIdentifiersFactoryMethods.response.value:
-            return CompleteAndCompatibilityCheckRoutine().response()
-
-    return None
+        diag_object = CompleteAndCompatibilityCheckRoutine()
+    
+    if diag_object is None:
+        return None
+    else:
+        if _method == RoutineControlIdentifiersFactoryMethods.start.value:
+            return diag_object.start()
+        if _method == RoutineControlIdentifiersFactoryMethods.request.value:
+            return  diag_object.request()
+        if _method == RoutineControlIdentifiersFactoryMethods.response.value:
+            return  diag_object.response()
+        if _method == RoutineControlIdentifiersFactoryMethods.stop.value:
+            return  diag_object.stop()
 

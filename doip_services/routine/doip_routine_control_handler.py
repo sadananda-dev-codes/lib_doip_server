@@ -3,7 +3,6 @@ from src.lib_doip_server.configs.read_yaml import *
 from src.lib_doip_server.configs.doip_sessions_status import DoIPState
 from src.lib_doip_server.doip_services.routine.doip_routine_control_factory import _doip_routine_identifier_factory
 from src.lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer_utils import DiagnosticsNRC
-
 class RoutineControlHandler:
     service = None
     session = None
@@ -16,7 +15,6 @@ class RoutineControlHandler:
         cls.session = None
         cls.response = None
         cls.security_service = 0x00
-        
 
 def _load_routine_identifier(_routine_id, sid=0x31):
     
@@ -59,15 +57,12 @@ def _doip_routine_control_identifiers_handler(_rid, sid):
         if _check_session_supported():
             
             if  _check_security_access():
-                
                 RoutineControlHandler.response = _doip_routine_identifier_factory(
-                                    RoutineControlHandler.service[0],
+                                    RoutineControlHandler.service,
                                     RoutineControlIdentifiersFactoryMethods.response.value
-                                    )
-                
+                                    )                
             else:
-                RoutineControlHandler.response = DoIPState.nrc(sid, DiagnosticsNRC.SECURITY_ACCESS_DENIED.value)
-                
+                RoutineControlHandler.response = DoIPState.nrc(sid, DiagnosticsNRC.SECURITY_ACCESS_DENIED.value)                
         else:
                 RoutineControlHandler.response = DoIPState.nrc(sid, DiagnosticsNRC.SERVICE_NOT_SUPPORTED_IN_THE_ACTIVE_SESSION.value)
     else:
@@ -78,7 +73,7 @@ def _doip_routine_control_identifiers_handler(_rid, sid):
     else:
         return RoutineControlHandler.response
 
-'''
+
 print(_doip_routine_control_identifiers_handler(0xf186, 0x31).hex())
 print('')
 
@@ -87,11 +82,19 @@ print('')
 
 print(_doip_routine_control_identifiers_handler(0xf199, 0x22).hex())
 print('')
-'''
-
 
 print(_doip_routine_control_identifiers_handler((0x05, 0x94, 0x76, 0x00), 0x31).hex())
 print('')
 
 print(_doip_routine_control_identifiers_handler((0x02, 0x03), 0x22).hex())
 print('')
+
+print(_doip_routine_control_identifiers_handler((0x02, 0x02), 0x22).hex())
+print('')
+
+print(_doip_routine_control_identifiers_handler((0x02, 0x02), 0x31).hex())
+print('')
+
+import time
+
+time.sleep(4)

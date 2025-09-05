@@ -71,7 +71,7 @@ class RoutineControlService(metaclass=RoutineControlMeta):
         if self.thread:
             self.stop_event.set()
         else:
-            raise Exception('No thread is running')
+            raise Exception('EXCEPTION ------ ROUTINE IS NOT RUNNING ------')
 
         self.routine_status = RoutineStatus.ROUTINE_ABORTED.value
         return self._request()
