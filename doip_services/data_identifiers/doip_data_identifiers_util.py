@@ -1,5 +1,5 @@
 from enum import Enum
-from lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer_utils import DiagnosticSessionStatus, DiagnosticSessionStatus
+from lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer_utils import DiagnosticSessionStatus
 
 class DataIdentifiersFactoryClassEnum(Enum):
     ActiveDiagnosticSession = 'ActiveDiagnosticSession'

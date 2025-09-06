@@ -1,5 +1,7 @@
 import struct
 
+from lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer_utils import DiagnosticSessionStatus
+
 from src.lib_doip_server.doip_services.data_identifiers.doip_data_identifiers_util import (
     read_data_by_identifiers,
     write_data_by_identifiers,
@@ -85,7 +87,15 @@ class WriteDataByIdentifier(DataIdentifiers, metaclass=SingletonDataIdentifiers)
         super().__init__(DiagnosticServices.WRITE_DATA_BY_IDENTIFIER.value,
                         write_data_by_identifiers[write_did_key])
 class ActiveDiagnosticSession(ReadDataByIdentifier):
-    pass
+    
+    def response(self):
+        return struct.pack(
+                    self.response_format,
+                    self.service_id + DiagnosticServices.POSITIVE_RESPONSE_CODE.value,
+                    self.data_identifier_lsb,
+                    self.data_identifier_msb,
+                    DiagnosticSessionStatus.ACTIVE_SESSION
+                    )
 class VehicleManufacturerSparePartNumber(ReadDataByIdentifier):
     pass
 class VehicleManufacturerEcuSoftwareVersionNumber(ReadDataByIdentifier):
@@ -106,3 +116,4 @@ class UsageMode(WriteDataByIdentifier):
     pass
 class ElectricPowerLevel(WriteDataByIdentifier):
     pass
+
