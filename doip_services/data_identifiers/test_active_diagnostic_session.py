@@ -28,6 +28,4 @@ class TestActiveDiagnosticSession:
         DiagnosticSessionStatus.ACTIVE_SESSION = 0x02
         diag_session = active_diagnostic_session
         received_response = diag_session.response()
-        print(expected_response.hex())
-        print(received_response.hex())
         assert expected_response == received_response
