@@ -2,45 +2,67 @@
 ActiveDiagnosticSession:
   session: [!!int 0x01, !!int 0x02, !!int 0x03]
   security_service: 0
+  conditions : 0x00
+  sequence : 0x00
 
 VehicleManufacturerSparePartNumber:
   session: [!!int 0x02]
   security_service: 1
+  conditions : 0x00
+  sequence : 0x00
 
 VehicleManufacturerEcuSoftwareVersionNumber:
   session: [!!int 0x02]
   security_service: 1
+  conditions : 0x00
+  sequence : 0x00
 
 VehicleManufacturerECUHardWareNumber:
   session: [!!int 0x02, !!int 0x03]
   security_service: 1
+  conditions : 0x00
+  sequence : 0x00
 
 SystemNameOrEngineType:
   session: [!!int 0x02, !!int 0x03]
   security_service: 0
+  conditions : 0x00
+  sequence : 0x00
 
 VehicleIdentificationNumber:
   session: [!!int 0x01, !!int 0x02, !!int 0x03]
   security_service: 0
+  conditions : 0x00
+  sequence : 0x00
 
 ### write data by identifiers
 
 GlobalRealTime:
   session: [!!int 0x01, !!int 0x02, !!int 0x03]
   security_service: 0x11
+  conditions : 0x00
+  sequence : 0x00
 
 TotalDistance:
   session: [!!int 0x03]
   security_service: 0x11
+  conditions : 0x00
+  sequence : 0x00
 
 VehicleBatteryVoltage:
   session: [!!int 0x03]
   security_service: 0x11
+  conditions : 0x00
+  sequence : 0x00
 
 UsageMode:
   session: [!!int 0x01, !!int 0x02, !!int 0x03]
   security_service: 0x11
+  conditions : 0x00
+  sequence : 0x00
 
 ElectricPowerLevel:
   session: [!!int 0x03]
   security_service: 0x11
+  conditions : 0x00
+  sequence : 0x00

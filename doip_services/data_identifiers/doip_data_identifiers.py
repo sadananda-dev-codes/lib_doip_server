@@ -13,6 +13,7 @@ class SingletonDataIdentifiers(type):
         if not hasattr(cls, '_instance'):
             cls._instance = super().__call__(*args, **kwargs)
         return cls._instance
+    
 class DataIdentifiers:
 
     __data_identifier_parameters__ = (
@@ -116,4 +117,3 @@ class UsageMode(WriteDataByIdentifier):
     pass
 class ElectricPowerLevel(WriteDataByIdentifier):
     pass
-

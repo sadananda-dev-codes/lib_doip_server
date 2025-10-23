@@ -10,6 +10,7 @@ from src.lib_doip_server.doip_services.routine.doip_routine_functions import (
                                                         _check_upload_precondition_routine,
                                                         _complete_and_compatibility_check_routine
                                                     )
+
 from lib_doip_server.doip_services.data_identifiers.doip_data_identifiers_factory import _doip_data_identifier_factory
 class RoutineControlMeta(type):
 
@@ -45,6 +46,7 @@ class RoutineControlMeta(type):
 
             setattr(new_cls, attr_name, make_property(attr_name, attr))
         return new_cls
+    
 class RoutineControlService(metaclass=RoutineControlMeta):
     service_id = 0x31
     sub_function = 0x01

@@ -11,6 +11,16 @@ uds_sessions:
       0x02: YES
       0x03: NO
       0x04: YES
+    session-supported:
+      0x01: NA
+      0x02: NA
+      0x03: NA
+      0x04: NA
+    security-level:
+      0x01: NA
+      0x02: NA
+      0x03: NA
+      0x04: NA
 
 ecu_resets:
   - service-id: 0x11
@@ -23,6 +33,74 @@ ecu_resets:
       0x01: NO
       0x02: NO
       0x03: NO
+    session-supported:
+      0x01: 0x03
+      0x02: 0x03
+      0x03: 0x03
+    security-level:
+      0x01: NA
+      0x02: NA
+      0x03: NA
+
+read_did:
+  - service-id: 0x22
+    name: ReadDataByIdentifiers
+    sub-functions:
+      0xF186: ActiveDiagnosticSession
+      0xF187: VehicleManufacturerSparePartNumber
+      0xF189: VehicleManufacturerEcuSoftwareVersionNumber
+      0xF191: VehicleManufacturerECUHardWareNumber
+      0xF197: SystemNameOrEngineType
+      0xF190: VehicleIdentificationNumber
+    security-access-required:
+      0xF186: NO
+      0xF187: NO
+      0xF189: NO
+      0xF191: YES
+      0xF197: NO
+      0xF190: YES
+    session-supported:
+      0xF186: 0x03
+      0xF187: 0x02
+      0xF189: 0x02
+      0xF191: 0x03
+      0xF197: 0x03
+      0xF190: 0x02
+    security-level:
+      0xF186: 0
+      0xF187: 0
+      0xF189: 0
+      0xF191: 3
+      0xF197: 0
+      0xF190: 3
+
+write_did:
+  - service-id: 0x2E
+    name: WriteDataByIdentifiers
+    sub-functions:
+      0xDD00: GlobalRealTime
+      0xDD32: TotalDistance
+      0xDD85: VehicleBatteryVoltage
+      0xDD56: UsageMode
+      0xDD51: ElectricPowerLevel
+    security-access-required:
+      0xDD00: NO
+      0xDD32: YES
+      0xDD85: NO
+      0xDD56: YES
+      0xDD51: NO
+    session-supported:
+      0xDD00: 0x03
+      0xDD32: 0x03
+      0xDD85: 0x02
+      0xDD56: 0x03
+      0xDD51: 0x02
+    security-level:
+      0xDD00: 0
+      0xDD32: 1
+      0xDD85: 0
+      0xDD56: 3
+      0xDD51: 0
 
 uds_security:
   - service-id: 0x27
@@ -33,6 +111,45 @@ uds_security:
       0x03: RequestSeed_Level2
       0x04: SendKey_Level2
     security-access-required:
-      0x01: N/A
-      0x02: N/A
-      0x03: N/A
+      0x01: NA
+      0x02: NA
+      0x03: NA
+      0x04: NA
+    session-supported:
+      0x01: 0x03
+      0x02: 0x03
+      0x03: 0x02
+      0x04: 0x01
+    security-level:
+      0x01: NA
+      0x02: NA
+      0x03: NA
+      0x04: NA
+
+routine_identifier:
+  - service-id: 0x31
+    name: RoutineIdentifier
+    sub-functions:
+      0x021201: 'CheckMemoryRoutine'
+      0x030140000100: 'CompleteAndCompatibilityCheck'
+      0x05947600: 'CheckUploadPrecondition'
+      0x0203: 'ProgrammingPreconditions'
+      0x0202: 'OnDemandSelfTest'
+    security-access-required:
+      0x021201: YES
+      0x030140000100: YES
+      0x05947600: YES
+      0x0203: YES
+      0x0202: YES
+    session-supported:
+      0x021201: 0x03
+      0x030140000100: 0x02
+      0x05947600: 0x03
+      0x0203: 0x02
+      0x0202: 0x02
+    security-level:
+      0x021201: 1
+      0x030140000100: 3 
+      0x05947600: 3
+      0x0203: 1
+      0x0202: 3

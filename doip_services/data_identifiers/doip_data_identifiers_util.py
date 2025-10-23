@@ -1,6 +1,5 @@
 from enum import Enum
 from lib_doip_server.doip_diagnostic_session.doip_diagnostic_layer_utils import DiagnosticSessionStatus
-
 class DataIdentifiersFactoryClassEnum(Enum):
     ActiveDiagnosticSession = 'ActiveDiagnosticSession'
     VehicleManufacturerSparePartNumber = 'VehicleManufacturerSparePartNumber'
@@ -127,4 +126,3 @@ write_data_by_identifiers = {
             [0x0F]
         ) # one byte
     }
-
