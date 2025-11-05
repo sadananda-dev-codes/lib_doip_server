@@ -17,33 +17,35 @@ for sid in uds_data.values():
     print(sid[0]['service-id'])
     print(type(sid[0]['service-id']))
 '''
-
 '''
 class JsonFileReader(ResourceReader):
     pass
 class YamlResourceReader(ResourceReader):
     pass
 '''
-
 class SingletonSessions(type):
     def __call__(cls, *args, **kwargs):
         if not hasattr(cls, '_instance'):
             cls._instance = super().__call__(*args, **kwargs)
         return cls._instance
 
-def build_sessions_factory(read=False, sid=0x00, file_name="doip_diagnostics_services_resource.yaml"):
+def build_sessions_factory(read=False, file_name="doip_diagnostics_services_resource.yaml"):
 
     def build_session_outer(fun):
 
-        def build_session_inner(self):
+        def build_session_inner(request, sid_requested, uds_data=None):
             
-            uds_data = None
+            service_details = None
             
             if not read:
-                with open(YAML_PATH, 'r') as file:
-                    uds_data = yaml.safe_load(file)
-                    
-            fun(sid, uds_data[sid])
+                with open(file_name, 'r') as file:
+                    service_details = yaml.safe_load(file)
+            
+            for sid in service_details.values():
+                if sid_requested in sid[0]['service-id'].keys():
+                    uds_data = sid[0]
+
+            return fun(request, sid_requested, uds_data)
             
         return build_session_inner
     
@@ -104,7 +106,6 @@ class EcuReset(UdsSession):
     sub_function_byte_len = (1,)
 class RoutineControl(UdsSession):
     service_id = 0x31
-    
 
 sessions = {
     
@@ -115,29 +116,49 @@ sessions = {
         0x27: SecurityAccessRequest()
     }
     
-
-class UdsSrviceBuilder:
-
-    ## TODO
+@build_sessions_factory(read=False)
+def UdsServiceParser(request, sid, uds_data=None):
     
-    @staticmethod
-    def build_service():
-        pass
-    # expose to decorator
+    def session_details(
+                        diagnostic_request_value,
+                        diagnostic_request_field
+                    ):
+            
+            yield diagnostic_request_value if diagnostic_request_value in uds_data[diagnostic_request_field].keys() else None
     
+    return session_details
+    
+    
+'''
     # check service in services
+    session_details['service-id']   = sid if sid in uds_data['service-id'].keys() else False 
     
     # check sub function in services
+    session_details['sub-functions']   = 0x01 if 0x01 in uds_data['sub-functions'].keys() else False 
     
     # check session supported
-    
+    session_details['security-access-required']   = 0x01 if 0x01 in uds_data['security-access-required'].keys() else False 
+
     # check security service required
+    session_details['session-supported']   = 0x01 if 0x01 in uds_data['session-supported'].keys() else False 
     
     # check security service un locked
-    
+    session_details['security-level']   = 0x01 if 0x01 in uds_data['security-level'].keys() else False 
+'''
 
-e = EcuReset().update_service_details()
-f = SecurityAccessRequest().update_service_details()
-g = ReadDataByIdentifier().update_service_details()
 
-print(f'{e=} {f=} {g=}')
+session_details = {
+                'service-id': None,
+                'sub-functions': None,
+                'session-supported': None,
+                'security-access-required': None,
+                'security-level': None
+            }
+
+sadananda = UdsServiceParser('0x10 01', 0x10)
+
+for val in session_details.keys():
+    session_details[val] = sadananda(val)
+
+print('')
+print(session_details)

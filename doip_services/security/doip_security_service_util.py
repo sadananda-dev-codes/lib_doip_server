@@ -98,7 +98,7 @@ class TimedWorkerThread(threading.Thread):
         security_util._is_security_key_unlocked = 0
         security_util.NRC = 0 
         security_util.reset_security_service_cur_retries()
-        print('sadananda timer has ended')
+        print('timer has ended')
 
     def get_status(self):
         return self._status

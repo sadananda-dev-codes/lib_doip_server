@@ -1,6 +1,6 @@
 uds_sessions:
-  - service-id: 0x10
-    name: DiagnosticSessionControl
+  - service-id: 
+      0x10: DiagnosticSessionControl
     sub-functions:
       0x01: DefaultSession
       0x02: ProgrammingSession
@@ -23,8 +23,8 @@ uds_sessions:
       0x04: NA
 
 ecu_resets:
-  - service-id: 0x11
-    name: ECUReset
+  - service-id: 
+      0x11: ECUReset
     sub-functions:
       0x01: HardReset
       0x02: KeyOffOnReset
@@ -43,8 +43,8 @@ ecu_resets:
       0x03: NA
 
 read_did:
-  - service-id: 0x22
-    name: ReadDataByIdentifiers
+  - service-id:
+      0x22: ReadDataByIdentifiers
     sub-functions:
       0xF186: ActiveDiagnosticSession
       0xF187: VehicleManufacturerSparePartNumber
@@ -75,8 +75,8 @@ read_did:
       0xF190: 3
 
 write_did:
-  - service-id: 0x2E
-    name: WriteDataByIdentifiers
+  - service-id: 
+      0x2E: WriteDataByIdentifiers
     sub-functions:
       0xDD00: GlobalRealTime
       0xDD32: TotalDistance
@@ -103,8 +103,8 @@ write_did:
       0xDD51: 0
 
 uds_security:
-  - service-id: 0x27
-    name: SecurityAccess
+  - service-id: 
+      0x27: SecurityAccess
     sub-functions:
       0x01: RequestSeed_Level1
       0x02: SendKey_Level1
@@ -127,8 +127,8 @@ uds_security:
       0x04: NA
 
 routine_identifier:
-  - service-id: 0x31
-    name: RoutineIdentifier
+  - service-id:
+      0x31: RoutineIdentifier
     sub-functions:
       0x021201: 'CheckMemoryRoutine'
       0x030140000100: 'CompleteAndCompatibilityCheck'

@@ -20,7 +20,7 @@ class RoutineStatus(IntEnum):
     ROUTINE_ABORTED = 2
     ROUTINE_EXECUTED = 3
 class CheckMemoryRoutineEnum(Enum):
-    ROUTINE_ID = (0x02, 0x12, 0x01)
+    IDENTIFIER = (0x02, 0x12, 0x01)
     REQUEST_FORMAT = '5B'
     RESPONSE_FORMAT = '6B'
     RESPONSE_RESULT_FORMAT = '11B'
@@ -30,7 +30,7 @@ class CheckMemoryRoutineEnum(Enum):
     ROUTINE_RESULTS_RESPONSE_DID = (DataIdentifiersFactoryClassEnum.VehicleManufacturerSparePartNumber.value,
                                     DataIdentifiersFactoryMethods.get_did_response.value)
 class CompleteAndCompatibilityCheckRoutineEnum(Enum):
-    ROUTINE_ID = (0x03, 0x01, 0x40, 0x00 ,0x01, 0x00)
+    IDENTIFIER = (0x03, 0x01, 0x40, 0x00 ,0x01, 0x00)
     REQUEST_FORMAT = '8B'
     RESPONSE_FORMAT = '9B'
     RESPONSE_RESULT_FORMAT = '12B'
@@ -40,7 +40,7 @@ class CompleteAndCompatibilityCheckRoutineEnum(Enum):
     ROUTINE_RESULTS_RESPONSE_DID = (DataIdentifiersFactoryClassEnum.VehicleManufacturerEcuSoftwareVersionNumber.value,
                                     DataIdentifiersFactoryMethods.get_did_response.value)
 class CheckUploadPreconditionRoutineEnum(Enum):
-    ROUTINE_ID = (0x05, 0x94, 0x76, 0x00)
+    IDENTIFIER = (0x05, 0x94, 0x76, 0x00)
     REQUEST_FORMAT = '6B'
     RESPONSE_FORMAT = '7B'
     RESPONSE_RESULT_FORMAT = '13B'
@@ -50,7 +50,7 @@ class CheckUploadPreconditionRoutineEnum(Enum):
     ROUTINE_RESULTS_RESPONSE_DID = (DataIdentifiersFactoryClassEnum.VehicleIdentificationNumber.value,
                                     DataIdentifiersFactoryMethods.get_did_response.value)
 class ProgrammingPreconditionsRoutineEnum(Enum):
-    ROUTINE_ID = (0x02, 0x03)
+    IDENTIFIER = (0x02, 0x03)
     REQUEST_FORMAT = '4B'
     RESPONSE_FORMAT = '5B'
     RESPONSE_RESULT_FORMAT = '6B'
@@ -59,7 +59,7 @@ class ProgrammingPreconditionsRoutineEnum(Enum):
     ROUTINE_STATUS = RoutineStatus.ROUTINE_NOT_STARTED.value
     ROUTINE_RESULTS_RESPONSE_DID = (None,)
 class OnDemandSelfTestRoutineEnum(Enum):
-    ROUTINE_ID = (0x02, 0x02)
+    IDENTIFIER = (0x02, 0x02)
     REQUEST_FORMAT = '4B'
     RESPONSE_FORMAT = '5B'
     RESPONSE_RESULT_FORMAT = '6B'
@@ -74,10 +74,10 @@ class RoutineControlFactoryClassEnum(Enum):
     CheckUploadPreconditionRoutine = 'CheckUploadPreconditionRoutine'
     CompleteAndCompatibilityCheckRoutine = 'CompleteAndCompatibilityCheckRoutine'
     
-routine_control_identifiers = {
-    'CheckMemoryRoutine': CheckMemoryRoutineEnum.ROUTINE_ID.value,
-    'CompleteAndCompatibilityCheckRoutine': CompleteAndCompatibilityCheckRoutineEnum.ROUTINE_ID.value,
-    'ProgrammingPreconditionsRoutine': ProgrammingPreconditionsRoutineEnum.ROUTINE_ID.value,
-    'CheckUploadPreconditionRoutine': CheckUploadPreconditionRoutineEnum.ROUTINE_ID.value, 
-    'OnDemandSelfTestRoutine': OnDemandSelfTestRoutineEnum.ROUTINE_ID.value
+routine_control_identifiers_dict = {
+    'CheckMemoryRoutine': CheckMemoryRoutineEnum,
+    'CompleteAndCompatibilityCheckRoutine': CompleteAndCompatibilityCheckRoutineEnum,
+    'ProgrammingPreconditionsRoutine': ProgrammingPreconditionsRoutineEnum,
+    'CheckUploadPreconditionRoutine': CheckUploadPreconditionRoutineEnum, 
+    'OnDemandSelfTestRoutine': OnDemandSelfTestRoutineEnum
     }

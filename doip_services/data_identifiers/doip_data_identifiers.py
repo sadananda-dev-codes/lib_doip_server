@@ -17,8 +17,7 @@ class SingletonDataIdentifiers(type):
 class DataIdentifiers:
 
     __data_identifier_parameters__ = (
-        'data_identifier_lsb',
-        'data_identifier_msb',
+        'data_identifier',
         'request_format',
         'response_format',
         'data_identifier_response'
@@ -40,36 +39,32 @@ class DataIdentifiers:
             return struct.pack(
                         self.request_format,
                         self.service_id,
-                        self.data_identifier_lsb,
-                        self.data_identifier_msb
-                        )
+                        *self.data_identifier
+                    )
             
         if isinstance(self, WriteDataByIdentifier):
             if write_did:
                 self.data_identifier_response = write_did
             return struct.pack(
                             self.request_format, 
-                            self.service_id,
-                            self.data_identifier_lsb,
-                            self.data_identifier_msb,
+                            self.service_id,                            
+                            *self.data_identifier,
                             *self.data_identifier_response
-                            )
+                        )
 
     def response(self):
         if isinstance(self, ReadDataByIdentifier):
             return struct.pack(
                         self.response_format,
                         self.service_id + DiagnosticServices.POSITIVE_RESPONSE_CODE.value,
-                        self.data_identifier_lsb,
-                        self.data_identifier_msb,
+                        *self.data_identifier
                         *self.data_identifier_response
                         )
         if isinstance(self, WriteDataByIdentifier):
             return struct.pack(
                 self.response_format,
                 self.service_id + DiagnosticServices.POSITIVE_RESPONSE_CODE.value,
-                self.data_identifier_lsb,
-                self.data_identifier_msb
+                *self.data_identifier
             )
             
     def get_did_response(self):
@@ -93,8 +88,7 @@ class ActiveDiagnosticSession(ReadDataByIdentifier):
         return struct.pack(
                     self.response_format,
                     self.service_id + DiagnosticServices.POSITIVE_RESPONSE_CODE.value,
-                    self.data_identifier_lsb,
-                    self.data_identifier_msb,
+                    *self.data_identifier,
                     DiagnosticSessionStatus.ACTIVE_SESSION
                     )
 class VehicleManufacturerSparePartNumber(ReadDataByIdentifier):

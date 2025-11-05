@@ -1,0 +1,15 @@
+from enum import Enum
+
+class DoipSessionEnum(Enum):
+    SID = (0x10,)
+    SUBFUNCTIONS = (
+                0x01,
+                0x02,
+                0x03
+            )
+    REQUEST_FORMAT = '2B'
+    
+ecu_reset_dict = {
+    "DoipSession" : DoipSessionEnum
+}
+    

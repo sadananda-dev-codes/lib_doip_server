@@ -29,12 +29,51 @@ def get_fmt_did_response(data_identifiers):
     
     if data_identifiers == DataIdentifiersFactoryClassEnum.VehicleIdentificationNumber.value:
         return '6B'
-
 class DataIdentifiersFactoryMethods(Enum):
     request = 1
     response = 2
     get_did_response = 3
-
+class ActiveDiagnosticSessionEnum(Enum):
+    IDENTIFIER = (0xF1, 0x86)
+    REQUEST_FORMAT = '3B'
+    RESPONSE_FORMAT = '4B'
+    DATA_IDENTIFIER_RESPONSE = (DiagnosticSessionStatus.ACTIVE_SESSION,)
+class VehicleManufacturerSparePartNumberEnum(Enum):
+    IDENTIFIER = (0xF1, 0x87)
+    REQUEST_FORMAT = '3B'
+    RESPONSE_FORMAT = '8B'
+    DATA_IDENTIFIER_RESPONSE = (0x31, 0x35, 0x36, 0x41, 0x48)
+class VehicleManufacturerEcuSoftwareVersionNumberEnum(Enum):
+    IDENTIFIER = (0xF1, 0x89)
+    REQUEST_FORMAT = '3B'
+    RESPONSE_FORMAT = '6B'
+    DATA_IDENTIFIER_RESPONSE = (0x34, 0x33, 0x37)
+class VehicleManufacturerECUHardWareNumberEnum(Enum):
+    IDENTIFIER = (0xF1, 0x91)
+    REQUEST_FORMAT = '3B'
+    RESPONSE_FORMAT = '7B'
+    DATA_IDENTIFIER_RESPONSE = (0x38, 0x35, 0x45, 0x39)
+class SystemNameOrEngineTypeEnum(Enum):
+    IDENTIFIER = (0xF1, 0x97)
+    REQUEST_FORMAT = '3B'
+    RESPONSE_FORMAT = '14B'
+    DATA_IDENTIFIER_RESPONSE = (0x48, 0x43, 0x22, 0xE4, 0xC6, 0xF7, 0x72, 0x20, 0x20, 0x20, 0x20)
+class VehicleIdentificationNumberEnum(Enum):
+    IDENTIFIER = (0xF1, 0x90)
+    REQUEST_FORMAT = '3B'
+    RESPONSE_FORMAT = '9B'
+    DATA_IDENTIFIER_RESPONSE = (0x32, 0x85, 0x32, 0x85, 0x32, 0x85)
+    
+data_identifiers_dict = {
+    "ActiveDiagnosticSession": ActiveDiagnosticSessionEnum,
+    "VehicleManufacturerSparePartNumber": VehicleManufacturerSparePartNumberEnum,
+    "VehicleManufacturerEcuSoftwareVersionNumber": VehicleManufacturerEcuSoftwareVersionNumberEnum,
+    "VehicleManufacturerECUHardWareNumber": VehicleManufacturerECUHardWareNumberEnum,
+    "SystemNameOrEngineType": SystemNameOrEngineTypeEnum,
+    "VehicleIdentificationNumber": VehicleIdentificationNumberEnum
+}
+    
+'''
 read_data_by_identifiers = {
         'ActiveDiagnosticSession': (
             0xF1,
@@ -126,3 +165,5 @@ write_data_by_identifiers = {
             [0x0F]
         ) # one byte
     }
+    
+'''
